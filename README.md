@@ -197,21 +197,34 @@ chmod 600 ~/.authinfo
 프로젝트 루트에 `.env` 파일을 생성합니다:
 
 ```env
-# Anthropic API 키 — https://console.anthropic.com 에서 발급
-ANTHROPIC_API_KEY=sk-ant-api03-...
+# OpenAI API 키 — https://platform.openai.com/api-keys 에서 발급
+OPENAI_API_KEY = sk-proj-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 
-# 사용할 Claude 모델 (claude-sonnet-4-6 권장)
-ANTHROPIC_MODEL=claude-sonnet-4-6
+# 사용할 OpenAI 모델
+OPENAI_MODEL  = gpt-4o-mini
+
+# SAS OnDemand for Academics 로그인 정보
+SAS_USER_NAME = yourname@example.com
+SAS_PASS_WORD = yourpassword
+```
+
+`.env.example` 파일을 참고해 복사 후 실제 값으로 교체하세요:
+
+```bash
+cp .env.example .env
 ```
 
 **환경 변수 목록:**
 
 | 변수 | 필수 | 설명 | 예시 |
 | --- | --- | --- | --- |
-| `ANTHROPIC_API_KEY` | ✅ | Anthropic API 키 | `sk-ant-api03-...` |
-| `ANTHROPIC_MODEL` | ✅ | 사용할 Claude 모델 ID | `claude-sonnet-4-6` |
+| `OPENAI_API_KEY` | ✅ | OpenAI API 키 | `sk-proj-...` |
+| `OPENAI_MODEL` | ✅ | 사용할 GPT 모델 ID | `gpt-4o-mini` |
+| `SAS_USER_NAME` | ✅ | SAS OnDemand for Academics 이메일 | `user@example.com` |
+| `SAS_PASS_WORD` | ✅ | SAS OnDemand for Academics 비밀번호 | `yourpassword` |
 
-> **API 키 발급**: [https://console.anthropic.com](https://console.anthropic.com) → API Keys → Create Key
+> **API 키 발급**: [https://platform.openai.com/api-keys](https://platform.openai.com/api-keys) → Create new secret key
+> **모델 선택 참고**: `gpt-4o-mini` (빠르고 저렴), `gpt-4o` (더 정확), `gpt-4.1` 등 OpenAI 모델 페이지에서 확인
 
 ---
 
