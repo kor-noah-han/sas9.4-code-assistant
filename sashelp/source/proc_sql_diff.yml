@@ -1,0 +1,96 @@
+differences:
+  - category: "Procedure Termination"
+    standard_sql: "No special termination keyword needed"
+    proc_sql: "Must end with QUIT; to close the PROC SQL block"
+
+  - category: "Row Limiting"
+    standard_sql: "LIMIT n (MySQL/PostgreSQL) or TOP n (SQL Server) or ROWNUM (Oracle)"
+    proc_sql: "Use OUTOBS=n as a PROC SQL option: proc sql outobs=10;"
+
+  - category: "Case Sensitivity in String Comparison"
+    standard_sql: "Case-sensitive by default (most DBMS)"
+    proc_sql: "Case-insensitive by default; use upcase()/lowcase() to normalize"
+
+  - category: "Column Alias Reference in WHERE"
+    standard_sql: "Cannot reference column alias in WHERE clause"
+    proc_sql: "Cannot reference column alias in WHERE; use CALCULATED keyword in HAVING or ORDER BY"
+
+  - category: "CALCULATED Keyword"
+    standard_sql: "Not supported"
+    proc_sql: "Use CALCULATED col_alias to reference a computed column in the same SELECT"
+
+  - category: "Macro Variable Assignment"
+    standard_sql: "Not supported"
+    proc_sql: "SELECT col INTO :macrovar FROM table; stores result in a SAS macro variable"
+
+  - category: "OUTER UNION Set Operator"
+    standard_sql: "Not supported (UNION ALL is the closest)"
+    proc_sql: "OUTER UNION CORR concatenates tables without removing duplicates and aligns by column name"
+
+  - category: "CORR Keyword in Set Operators"
+    standard_sql: "Not supported"
+    proc_sql: "CORR keyword in UNION/EXCEPT/INTERSECT aligns columns by name instead of position"
+
+  - category: "Missing Values"
+    standard_sql: "NULL"
+    proc_sql: "NULL and SAS missing (.) are equivalent; IS MISSING or IS NULL both work"
+
+  - category: "Date Literals"
+    standard_sql: "DATE '2024-01-01' or '2024-01-01' (varies by DBMS)"
+    proc_sql: "Use SAS date literal: '01JAN2024'd"
+
+  - category: "String Concatenation"
+    standard_sql: "|| or CONCAT() depending on DBMS"
+    proc_sql: "Use || or CAT()/CATS()/CATX() functions"
+
+  - category: "MONOTONIC() Function"
+    standard_sql: "Not supported"
+    proc_sql: "MONOTONIC() returns a sequential row number within a query (not reliable across joins)"
+
+  - category: "Modifying Existing Tables"
+    standard_sql: "ALTER TABLE ... ADD/DROP/MODIFY COLUMN"
+    proc_sql: "ALTER TABLE supports ADD, DROP, MODIFY columns"
+
+  - category: "Creating Table from Query"
+    standard_sql: "CREATE TABLE AS SELECT ..."
+    proc_sql: "CREATE TABLE work.newtable AS SELECT ... (must specify libref)"
+
+  - category: "Inserting Rows"
+    standard_sql: "INSERT INTO table VALUES (...) or INSERT INTO table SELECT ..."
+    proc_sql: "Both supported; also INSERT INTO table SET col=value syntax"
+
+  - category: "Views"
+    standard_sql: "CREATE VIEW AS SELECT ..."
+    proc_sql: "CREATE VIEW libref.viewname AS SELECT ...; single-table views are updatable"
+
+  - category: "Indexes"
+    standard_sql: "CREATE INDEX on table(col)"
+    proc_sql: "CREATE INDEX indexname ON table(col); limited index usage compared to DBMS"
+
+  - category: "Subquery in FROM Clause (Inline View)"
+    standard_sql: "Supported (derived table)"
+    proc_sql: "Supported; must alias the inline view: FROM (SELECT ...) AS alias"
+
+  - category: "HAVING without GROUP BY"
+    standard_sql: "Applies aggregate filter to the entire result set"
+    proc_sql: "Supported; HAVING without GROUP BY treats the whole table as one group"
+
+  - category: "FEEDBACK Option"
+    standard_sql: "Not supported"
+    proc_sql: "PROC SQL FEEDBACK; expands SELECT * into explicit column list in the log"
+
+  - category: "STIMER Option"
+    standard_sql: "Not supported"
+    proc_sql: "PROC SQL STIMER; prints execution time per SQL statement in the log"
+
+  - category: "NOPRINT Option"
+    standard_sql: "Not supported"
+    proc_sql: "PROC SQL NOPRINT; suppresses output (useful when only storing results)"
+
+  - category: "RESET Statement"
+    standard_sql: "Not supported"
+    proc_sql: "RESET option; changes PROC SQL options mid-session without restarting"
+
+  - category: "DESCRIBE Statement"
+    standard_sql: "DESC table or INFORMATION_SCHEMA (varies by DBMS)"
+    proc_sql: "DESCRIBE TABLE libref.table; prints column definitions to the log"

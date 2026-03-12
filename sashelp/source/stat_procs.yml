@@ -1,0 +1,405 @@
+procedures:
+
+  # ── 기술 통계 ─────────────────────────────────────────────────────────────────
+
+  - name: PROC MEANS
+    purpose: "수치 변수의 기술 통계량 계산 (N, MEAN, STD, MIN, MAX 등)"
+    key_options:
+      - "통계량 키워드: N NMISS MEAN STD VAR MIN MAX MEDIAN RANGE SKEWNESS KURTOSIS"
+      - "CLASS: 그룹별 통계 계산"
+      - "VAR: 분석할 수치 변수 목록"
+      - "OUTPUT OUT=work.ds MEAN= STD= / AUTONAME: 결과를 데이터셋으로 저장"
+    example: >
+      proc means data=sashelp.cars n mean std min max;
+        var MSRP Horsepower;
+        class Origin;
+      run;
+
+  - name: PROC UNIVARIATE
+    purpose: "단변량 분포 분석 — 기술통계, 정규성 검정(Shapiro-Wilk), 백분위수, 극단값"
+    key_options:
+      - "NORMAL: 정규성 검정 통계량 추가 출력"
+      - "PLOT: 줄기-잎 도표, 상자 그림 출력"
+      - "HISTOGRAM / QQPLOT (ODS Graphics 필요)"
+      - "VAR: 분석 변수; CLASS: 그룹별 분석"
+    example: >
+      proc univariate data=sashelp.class normal;
+        var Height Weight;
+      run;
+
+  - name: PROC FREQ
+    purpose: "범주형 변수의 도수분포 및 교차표, 카이제곱·Fisher 검정"
+    key_options:
+      - "TABLES a: 단방향 빈도; TABLES a*b: 교차표"
+      - "/ CHISQ: 카이제곱 검정; / FISHER: Fisher 정확 검정"
+      - "/ EXPECTED CELLCHI2: 기대도수, 셀 카이제곱 출력"
+      - "/ NOCOL NOROW NOPERCENT: 출력 퍼센트 제어"
+    example: >
+      proc freq data=sashelp.cars;
+        tables Origin * Type / chisq expected;
+      run;
+
+  - name: PROC CORR
+    purpose: "변수 간 상관계수 행렬 (Pearson, Spearman, Kendall)"
+    key_options:
+      - "기본: Pearson 상관; SPEARMAN / KENDALL 옵션으로 변경"
+      - "VAR: 분석 변수; WITH: 타 변수와의 상관"
+      - "/ NOSIMPLE: 기술통계 억제; PLOTS=MATRIX: 산점도 행렬"
+    example: >
+      proc corr data=sashelp.iris spearman;
+        var SepalLength SepalWidth PetalLength PetalWidth;
+      run;
+
+  # ── t검정 / 분산분석 ────────────────────────────────────────────────────────
+
+  - name: PROC TTEST
+    purpose: "단일 표본, 독립 2표본, 대응 t검정 및 등분산 검정"
+    key_options:
+      - "CLASS var: 독립 2표본 검정 (그룹 변수)"
+      - "PAIRED a*b: 대응 t검정"
+      - "H0=값: 귀무가설 평균값 (기본 0)"
+      - "SIDES=U/L/2: 단측/양측 검정"
+    example: >
+      proc ttest data=sashelp.class;
+        class Sex;
+        var Height Weight;
+      run;
+
+  - name: PROC ANOVA
+    purpose: "일원 분산분석 (동일 셀 수 가정); 다원 ANOVA는 PROC GLM 권장"
+    key_options:
+      - "CLASS: 처리 요인 변수"
+      - "MODEL 반응변수 = 요인들"
+      - "MEANS 요인 / TUKEY BON SNK: 사후 다중비교"
+    example: >
+      proc anova data=sashelp.cars;
+        class Origin;
+        model MSRP = Origin;
+        means Origin / tukey;
+      run;
+
+  - name: PROC GLM
+    purpose: "일반선형모형 — 다원 ANOVA, 공분산분석(ANCOVA), 반복측정"
+    key_options:
+      - "CLASS: 범주형 요인; MODEL: 종속~독립 공식"
+      - "MEANS / LSMEANS: 집단 평균, 최소제곱평균"
+      - "REPEATED: 반복측정 요인"
+      - "SOLUTION: 모수 추정값 출력"
+    example: >
+      proc glm data=sashelp.cars;
+        class Origin Type;
+        model MSRP = Origin Type Origin*Type;
+        lsmeans Origin*Type / pdiff adjust=tukey;
+      run;
+
+  # ── 회귀분석 ────────────────────────────────────────────────────────────────
+
+  - name: PROC REG
+    purpose: "다중 선형 회귀분석 — 모수 추정, 잔차 진단, 변수 선택"
+    key_options:
+      - "MODEL y = x1 x2 ... / SELECTION=STEPWISE|FORWARD|BACKWARD"
+      - "/ R: 잔차 출력; / CLB: 계수 신뢰구간; / VIF: 다중공선성"
+      - "OUTPUT OUT=work.res PREDICTED=pred RESIDUAL=resid"
+    example: >
+      proc reg data=sashelp.cars;
+        model MSRP = Horsepower EngineSize Weight / vif r;
+        output out=work.reg_out predicted=pred_msrp residual=resid;
+      run;
+
+  - name: PROC LOGISTIC
+    purpose: "로지스틱 회귀 — 이항/다항/순서형 반응 변수"
+    key_options:
+      - "MODEL y(EVENT='1') = x1 x2 / SELECTION= CTABLE ROCPLOT"
+      - "CLASS: 범주형 독립변수 (REF= 기준 지정)"
+      - "ODDSRATIO: 오즈비 출력; / LACKFIT: Hosmer-Lemeshow 검정"
+      - "OUTPUT OUT=work.pred PREDICTED=prob"
+    example: >
+      proc logistic data=sashelp.heart descending;
+        class Sex Smoking / param=ref;
+        model Status = Age Sex Smoking Weight;
+        oddsratio;
+      run;
+
+  - name: PROC GENMOD
+    purpose: "일반화 선형 모형 — Poisson, Negative Binomial, Gamma, Tweedie 등"
+    key_options:
+      - "MODEL y = x / DIST=POISSON|GAMMA|NEGBIN LINK=LOG|LOGIT|IDENTITY"
+      - "CLASS: 범주형 변수; REPEATED SUBJECT=id: GEE 반복측정"
+      - "LSMEANS / ESTIMATE: 예측 평균, 대비 추정"
+    example: >
+      proc genmod data=sashelp.cars;
+        class Origin;
+        model MSRP = Horsepower Origin / dist=gamma link=log;
+      run;
+
+  - name: PROC MIXED
+    purpose: "혼합 선형 모형 — 랜덤 효과, 반복측정, 군집 데이터"
+    key_options:
+      - "CLASS: 범주형 변수; MODEL: 고정 효과"
+      - "RANDOM: 랜덤 효과 지정 / TYPE=UN|CS|AR(1)"
+      - "REPEATED SUBJECT= / TYPE=: 잔차 공분산 구조"
+      - "LSMEANS / SOLUTION: 추정값 출력"
+    example: >
+      proc mixed data=work.repeated_data;
+        class Subject Group Time;
+        model Score = Group Time Group*Time / solution;
+        random Subject(Group);
+        lsmeans Group*Time / pdiff;
+      run;
+
+  - name: PROC PHREG
+    purpose: "Cox 비례 위험 모형 (생존 분석 — 시간-사건 데이터)"
+    key_options:
+      - "MODEL time*event(0) = x1 x2: event(0)=중도절단 코드"
+      - "CLASS: 범주형 공변량; / TIES=EFRON|BRESLOW"
+      - "BASELINE OUT=work.surv SURVIVAL=surv_prob: 생존 확률 저장"
+    example: >
+      proc phreg data=work.survival_data;
+        class Treatment(ref='Control');
+        model SurvTime*Status(0) = Age Treatment;
+        baseline out=work.surv_out survival=s_hat;
+      run;
+
+  - name: PROC LIFETEST
+    purpose: "Kaplan-Meier 생존 곡선 추정 및 로그순위(Log-rank) 검정"
+    key_options:
+      - "TIME time*event(0): 생존시간*사건변수(중도절단코드)"
+      - "STRATA: 그룹별 생존 곡선 비교"
+      - "/ LOGRANK: 로그순위 검정; / PLOTS=S: 생존 곡선"
+    example: >
+      proc lifetest data=work.cancer_data plots=s(atrisk);
+        time SurvMonths*Dead(0);
+        strata TreatGroup;
+      run;
+
+  # ── 비모수 검정 ─────────────────────────────────────────────────────────────
+
+  - name: PROC NPAR1WAY
+    purpose: "비모수 검정 — Wilcoxon 순위합, Kruskal-Wallis, van der Waerden"
+    key_options:
+      - "CLASS: 그룹 변수; VAR: 반응 변수"
+      - "WILCOXON: Wilcoxon 검정; EDF: K-S 검정"
+      - "/ MEDIAN: 중앙값 검정"
+    example: >
+      proc npar1way data=sashelp.class wilcoxon;
+        class Sex;
+        var Height;
+      run;
+
+  # ── 다변량 분석 ────────────────────────────────────────────────────────────
+
+  - name: PROC PRINCOMP
+    purpose: "주성분 분석(PCA) — 차원 축소, 성분 점수 계산"
+    key_options:
+      - "VAR: 분석 변수; N=k: 추출 성분 수"
+      - "OUT=work.scores: 성분 점수 데이터셋 저장"
+      - "/ COV: 공분산 행렬 기반 (기본: 상관행렬)"
+    example: >
+      proc princomp data=sashelp.iris out=work.pca_scores n=2;
+        var SepalLength SepalWidth PetalLength PetalWidth;
+      run;
+
+  - name: PROC FACTOR
+    purpose: "요인 분석(EFA) — 공통요인 추출, 요인 회전"
+    key_options:
+      - "METHOD=PRINCIPAL|ML|ALPHA: 추출 방법"
+      - "ROTATE=VARIMAX|PROMAX|OBLIMIN: 회전 방법"
+      - "NFACTORS=k: 요인 수; SCREE: 스크리 플롯"
+      - "OUT=work.fscores: 요인 점수 저장"
+    example: >
+      proc factor data=work.survey method=ml rotate=varimax nfactors=3 scree;
+        var q1-q15;
+      run;
+
+  - name: PROC CLUSTER
+    purpose: "계층적 군집 분석 (Ward, Average, Complete, Single 등)"
+    key_options:
+      - "METHOD=WARD|AVERAGE|COMPLETE|SINGLE: 군집 연결법"
+      - "VAR: 군집 변수; OUTTREE=work.tree: 덴드로그램 트리 저장"
+      - "STD: 표준화 후 군집; PLOTS=DENDROGRAM: 덴드로그램"
+    example: >
+      proc cluster data=sashelp.iris method=ward outtree=work.clus_tree std;
+        var SepalLength SepalWidth PetalLength PetalWidth;
+      run;
+      proc tree data=work.clus_tree nclusters=3 out=work.clus_out;
+        id Species;
+      run;
+
+  - name: PROC FASTCLUS
+    purpose: "K-평균 군집 분석 (대용량 데이터에 효율적)"
+    key_options:
+      - "MAXCLUSTERS=k: 군집 수"
+      - "MAXITER=n: 최대 반복 횟수 (기본 10)"
+      - "OUT=work.clus: 군집 할당 결과 저장"
+      - "OUTSEED=work.seeds: 최종 군집 중심점 저장"
+    example: >
+      proc fastclus data=sashelp.iris maxclusters=3 out=work.kmeans;
+        var SepalLength SepalWidth PetalLength PetalWidth;
+      run;
+
+  - name: PROC DISCRIM
+    purpose: "판별 분석 — 선형/이차 판별 함수, 교차검증 오분류율"
+    key_options:
+      - "CLASS: 그룹 변수; VAR: 판별 변수"
+      - "CROSSVALIDATE: 교차검증; METHOD=NORMAL|NPAR"
+      - "OUT=work.discrim_out: 사후 확률 포함 출력 데이터셋"
+    example: >
+      proc discrim data=sashelp.iris crossvalidate method=normal;
+        class Species;
+        var SepalLength SepalWidth PetalLength PetalWidth;
+      run;
+
+  - name: PROC CANCORR
+    purpose: "정준 상관 분석 — 두 변수 집합 간 최대 상관 추출"
+    key_options:
+      - "VAR: 첫 번째 변수 집합; WITH: 두 번째 변수 집합"
+      - "OUT=work.cc: 정준 점수 저장"
+    example: >
+      proc cancorr data=sashelp.iris out=work.cc_scores;
+        var SepalLength SepalWidth;
+        with PetalLength PetalWidth;
+      run;
+
+  # ── 시계열 ─────────────────────────────────────────────────────────────────
+
+  - name: PROC ARIMA
+    purpose: "ARIMA / SARIMA 시계열 모형 식별, 추정, 예측"
+    key_options:
+      - "IDENTIFY VAR=y(d,D) NLAG=n: 차분 차수, ACF/PACF"
+      - "ESTIMATE P=p Q=q: AR, MA 차수 추정; METHOD=ML|CLS"
+      - "FORECAST LEAD=n OUT=work.fcst: n기간 예측"
+    example: >
+      proc arima data=sashelp.stocks;
+        where Stock='IBM';
+        identify var=Close(1) nlag=20;
+        estimate p=1 q=1 method=ml;
+        forecast lead=12 out=work.arima_fcst;
+      run;
+
+  - name: PROC AUTOREG
+    purpose: "자기회귀 오차 회귀 모형, ARCH/GARCH 분산 모형"
+    key_options:
+      - "MODEL y = x / NLAG=p: AR(p) 오차 구조"
+      - "/ GARCH=(p=1,q=1): GARCH 분산 모형"
+      - "/ DWPROB GODFREY: 자기상관 검정"
+    example: >
+      proc autoreg data=sashelp.stocks;
+        where Stock='IBM';
+        model Close = / nlag=2 dwprob;
+      run;
+
+  # ── 머신러닝 / 고성능 ──────────────────────────────────────────────────────
+
+  - name: PROC HPFOREST
+    purpose: "랜덤 포레스트 분류/회귀 (SAS High-Performance)"
+    key_options:
+      - "TARGET y / LEVEL=NOMINAL|INTERVAL: 반응 변수 유형"
+      - "INPUT x1 x2 / LEVEL=NOMINAL|INTERVAL: 예측 변수"
+      - "NTREES=100 SEED=12345"
+      - "OOB VARS_TO_TRY=k"
+    example: >
+      proc hpforest data=sashelp.iris ntrees=200 seed=1234;
+        target Species / level=nominal;
+        input SepalLength SepalWidth PetalLength PetalWidth / level=interval;
+        ods output FitStatistics=work.fit_stats;
+      run;
+
+  - name: PROC HPLOGISTIC
+    purpose: "고성능 로지스틱 회귀 — 대용량 데이터, 정규화 옵션"
+    key_options:
+      - "MODEL y(EVENT=) = x1 x2: 이항 반응"
+      - "CLASS: 범주형 변수; SELECTION=LASSO|ELASTICNET"
+      - "PARTITION FRACTION(VALIDATE=0.2 TEST=0.1)"
+    example: >
+      proc hplogistic data=sashelp.heart;
+        class Sex Smoking / param=glm;
+        model Status(event='Dead') = Age Sex Smoking Cholesterol;
+      run;
+
+  - name: PROC HPNEURAL
+    purpose: "다층 퍼셉트론 신경망 분류/회귀"
+    key_options:
+      - "TARGET y / LEVEL=NOMINAL|INTERVAL"
+      - "INPUT x1-xn / LEVEL=INTERVAL|NOMINAL"
+      - "HIDDEN 10: 은닉층 뉴런 수; TRAIN NUMTRIES=5"
+    example: >
+      proc hpneural data=sashelp.iris;
+        target Species / level=nominal;
+        input SepalLength SepalWidth PetalLength PetalWidth / level=interval;
+        hidden 8;
+        train numtries=5 maxiter=500;
+      run;
+
+  # ── 설계 / 표본추출 / 검정력 ────────────────────────────────────────────────
+
+  - name: PROC SURVEYSELECT
+    purpose: "확률 표본 추출 — 단순무작위, 층화, 계통, 클러스터"
+    key_options:
+      - "METHOD=SRS|STRATIFIED|SYSTEMATIC|PPS: 추출 방법"
+      - "N=n or SAMPRATE=0.1: 표본 크기 또는 비율"
+      - "STRATA: 층화 변수; OUT=work.sample: 추출 결과"
+      - "SEED=: 재현성을 위한 시드"
+    example: >
+      proc surveyselect data=sashelp.cars method=stratified n=20 seed=42
+        out=work.car_sample;
+        strata Origin;
+      run;
+
+  - name: PROC POWER
+    purpose: "표본 크기 계산 및 검정력 분석 — t검정, ANOVA, 회귀, 비율 검정"
+    key_options:
+      - "ONESAMPLEMEANS / TWOSAMPLEMEANS: 평균 검정"
+      - "TWOSAMPLEFREQ: 비율 검정; ONEWAYANOVA: ANOVA"
+      - "NTOTAL=/ NPERGROUP=: 표본 수; POWER=0.80: 목표 검정력"
+      - "ALPHA=0.05: 유의수준"
+    example: >
+      proc power;
+        twosamplemeans
+          meandiff = 5
+          stddev   = 10
+          power    = 0.80
+          npergroup = .;
+      run;
+
+  # ── 유틸리티 ────────────────────────────────────────────────────────────────
+
+  - name: PROC TABULATE
+    purpose: "다차원 교차 집계표 — 합계, 평균, 퍼센트를 행·열·페이지로 구성"
+    key_options:
+      - "CLASS: 분류 변수; VAR: 분석 변수"
+      - "TABLE 행spec, 열spec: 테이블 구조 정의"
+      - "통계량: N MEAN SUM PCTN PCTSUM MIN MAX"
+    example: >
+      proc tabulate data=sashelp.cars;
+        class Origin Type;
+        var MSRP;
+        table Origin, Type*(N MEAN*MSRP);
+      run;
+
+  - name: PROC TRANSPOSE
+    purpose: "데이터셋 행-열 전치 (Wide ↔ Long 변환)"
+    key_options:
+      - "VAR: 전치할 변수; ID: 새 컬럼명으로 쓸 변수"
+      - "BY: 그룹 변수 (사전 정렬 필요); PREFIX=: 새 변수 이름 접두사"
+      - "OUT=work.transposed"
+    example: >
+      proc transpose data=sashelp.class out=work.class_wide prefix=student_;
+        by Sex;
+        id Name;
+        var Height;
+      run;
+
+  - name: PROC IML
+    purpose: "SAS 행렬 언어 — 수치 계산, 시뮬레이션, 사용자 정의 통계"
+    key_options:
+      - "행렬 선언: A = {1 2, 3 4}; 전치: A`; 역행렬: inv(A)"
+      - "USE work.ds; READ ALL VAR {x y}: 데이터셋 읽기"
+      - "CREATE work.out VAR {name}: 데이터셋 쓰기"
+      - "DO/END, PRINT 문으로 반복 및 출력"
+    example: >
+      proc iml;
+        A = {1 2 3, 4 5 6, 7 8 9};
+        print A;
+        evals = eigval(A);
+        print evals;
+      quit;

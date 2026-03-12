@@ -1,0 +1,144 @@
+# SASHELP 주요 데이터셋 정의
+# top: true → 라이브러리 트리 기본 표시 (더보기 없이 바로 보임)
+# code_generator의 SYSTEM_PROMPT에도 자동 주입됨
+
+datasets:
+  - name: cars
+    label: "Automobiles (428 obs)"
+    top: true
+    columns:
+      - {name: Make,        label: "Make of vehicle",                    type: C}
+      - {name: Model,       label: "Model name",                         type: C}
+      - {name: Type,        label: "Vehicle type",                       type: C}
+      - {name: Origin,      label: "Region of origin",                   type: C}
+      - {name: MSRP,        label: "Manufacturer's Suggested Retail Price", type: N}
+      - {name: Invoice,     label: "Invoice price",                      type: N}
+      - {name: EngineSize,  label: "Engine size (L)",                    type: N}
+      - {name: Cylinders,   label: "Number of cylinders",                type: N}
+      - {name: Horsepower,  label: "Horsepower",                         type: N}
+      - {name: MPG_City,    label: "City miles per gallon",              type: N}
+      - {name: MPG_Highway, label: "Highway miles per gallon",           type: N}
+      - {name: Weight,      label: "Weight (lbs)",                       type: N}
+      - {name: Wheelbase,   label: "Wheelbase (in)",                     type: N}
+      - {name: Length,      label: "Length (in)",                        type: N}
+
+  - name: class
+    label: "Student Body Measurements (19 obs)"
+    top: true
+    columns:
+      - {name: Name,   label: "Student name",  type: C}
+      - {name: Sex,    label: "Sex (F/M)",      type: C}
+      - {name: Age,    label: "Age in years",   type: N}
+      - {name: Height, label: "Height (in)",    type: N}
+      - {name: Weight, label: "Weight (lbs)",   type: N}
+
+  - name: iris
+    label: "Fisher Iris Data (150 obs)"
+    top: true
+    columns:
+      - {name: SepalLength, label: "Sepal length (cm)", type: N}
+      - {name: SepalWidth,  label: "Sepal width (cm)",  type: N}
+      - {name: PetalLength, label: "Petal length (cm)", type: N}
+      - {name: PetalWidth,  label: "Petal width (cm)",  type: N}
+      - {name: Species,     label: "Iris species",      type: C}
+
+  - name: heart
+    label: "Framingham Heart Study (5209 obs)"
+    top: true
+    columns:
+      - {name: Status,      label: "Vital status",              type: C}
+      - {name: DeathCause,  label: "Cause of death",            type: C}
+      - {name: AgeCHDdiag,  label: "Age at CHD diagnosis",      type: N}
+      - {name: Smoking,     label: "Cigarettes per day",        type: N}
+      - {name: Sex,         label: "Sex",                       type: C}
+      - {name: AgeAtStart,  label: "Age at study start",        type: N}
+      - {name: Height,      label: "Height (cm)",               type: N}
+      - {name: Weight,      label: "Weight (kg)",               type: N}
+      - {name: Diastolic,   label: "Diastolic blood pressure",  type: N}
+      - {name: Systolic,    label: "Systolic blood pressure",   type: N}
+      - {name: MRW,         label: "Metropolitan relative weight", type: N}
+      - {name: Cholesterol, label: "Total cholesterol",         type: N}
+
+  - name: baseball
+    label: "Baseball Salaries (322 obs)"
+    top: true
+    columns:
+      - {name: Name,     label: "Player name",           type: C}
+      - {name: nAtBat,   label: "At bats in 1986",       type: N}
+      - {name: nHits,    label: "Hits in 1986",          type: N}
+      - {name: nHome,    label: "Home runs in 1986",     type: N}
+      - {name: nRuns,    label: "Runs in 1986",          type: N}
+      - {name: nRBI,     label: "RBIs in 1986",          type: N}
+      - {name: nBB,      label: "Walks in 1986",         type: N}
+      - {name: YrMajor,  label: "Years in major leagues",type: N}
+      - {name: Salary,   label: "1987 annual salary ($K)", type: N}
+      - {name: Team,     label: "Team",                  type: C}
+      - {name: LeagueID, label: "League",                type: C}
+      - {name: Division, label: "Division",              type: C}
+
+  - name: stocks
+    label: "Daily Stock Prices"
+    top: true
+    columns:
+      - {name: Stock,  label: "Stock ticker name",  type: C}
+      - {name: Date,   label: "Trading date",        type: N}
+      - {name: Open,   label: "Opening price",       type: N}
+      - {name: High,   label: "Daily high price",    type: N}
+      - {name: Low,    label: "Daily low price",     type: N}
+      - {name: Close,  label: "Closing price",       type: N}
+      - {name: Volume, label: "Trading volume",      type: N}
+
+  - name: prdsale
+    label: "Product Sales (1440 obs)"
+    top: true
+    columns:
+      - {name: COUNTRY,  label: "Country",          type: C}
+      - {name: REGION,   label: "Region",           type: C}
+      - {name: DIVISION, label: "Division",         type: C}
+      - {name: PRODTYPE, label: "Product type",     type: C}
+      - {name: PRODUCT,  label: "Product name",     type: C}
+      - {name: QUARTER,  label: "Quarter",          type: C}
+      - {name: YEAR,     label: "Year",             type: N}
+      - {name: MONTH,    label: "Month",            type: C}
+      - {name: ACTUAL,   label: "Actual sales",     type: N}
+      - {name: PREDICT,  label: "Predicted sales",  type: N}
+
+  - name: air
+    label: "Air Passengers (144 obs)"
+    top: true
+    columns:
+      - {name: date, label: "Month",                   type: N}
+      - {name: air,  label: "Passengers (thousands)",  type: N}
+
+  - name: crime
+    label: "US City Crime Rates (46 obs)"
+    top: true
+    columns:
+      - {name: City,    label: "City name",              type: C}
+      - {name: Murder,  label: "Murder rate",            type: N}
+      - {name: Rape,    label: "Rape rate",              type: N}
+      - {name: Robbery, label: "Robbery rate",           type: N}
+      - {name: Assault, label: "Assault rate",           type: N}
+      - {name: Burglary,label: "Burglary rate",          type: N}
+      - {name: Larceny, label: "Larceny rate",           type: N}
+      - {name: Auto,    label: "Auto theft rate",        type: N}
+
+  - name: shoes
+    label: "Shoe Store Sales"
+    top: true
+    columns:
+      - {name: Region,   label: "Sales region",  type: C}
+      - {name: Product,  label: "Product type",  type: C}
+      - {name: Stores,   label: "Number of stores", type: N}
+      - {name: Sales,    label: "Total sales",    type: N}
+      - {name: Inventory,label: "Inventory",      type: N}
+      - {name: Returns,  label: "Returns",        type: N}
+
+  - name: snacks
+    label: "Snack Food Sales"
+    top: false
+    columns:
+      - {name: date,    label: "Date",          type: N}
+      - {name: region,  label: "Sales region",  type: C}
+      - {name: product, label: "Product name",  type: C}
+      - {name: sales,   label: "Sales amount",  type: N}
