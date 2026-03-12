@@ -1189,7 +1189,7 @@
       </button>
     </div>
     <div class="lib-scroll" id="libTree"></div>
-    <div class="lib-overlay" id="libOverlay">
+    <div class="lib-overlay hidden" id="libOverlay">
       <div class="lib-spinner"></div>
     </div>
   </div>
@@ -1318,42 +1318,19 @@ function _setLibLoading(on) {
 }
 
 async function loadLibraries() {
-  _setLibLoading(true);
-  let metaLibs = [];
   try {
-    // 1단계: 구조 메타데이터 (YAML, 빠름)
-    const metaRes = await fetch('/libraries');
-    const meta = await metaRes.json();
-    if (meta.top_names) {
-      _sashelp_top_names = new Set(meta.top_names.map(n => n.toLowerCase()));
+    // YAML 메타데이터만 로드 — SAS 세션 불필요, 즉시 렌더링
+    const res = await fetch('/libraries');
+    const data = await res.json();
+    if (data.top_names) {
+      _sashelp_top_names = new Set(data.top_names.map(n => n.toLowerCase()));
     }
-    if (meta.libraries) {
-      meta.libraries.forEach(lib => {
+    if (data.libraries) {
+      data.libraries.forEach(lib => {
         if (lib.writable) _writableLibs.add(lib.name.toUpperCase());
       });
-      metaLibs = meta.libraries;
     }
-
-    // 2단계: MYLIB만 조회 (초기 로드 — WORK는 항상 비어있음, SASHELP는 YAML 사용)
-    try {
-      const ctrl = new AbortController();
-      const tid = setTimeout(() => ctrl.abort(), 30000); // 30초 타임아웃
-      const liveRes = await fetch(
-        `/libraries/refresh?initial=true&session_id=${encodeURIComponent(activeId || '')}`,
-        { signal: ctrl.signal }
-      );
-      clearTimeout(tid);
-      const live = await liveRes.json();
-      if (live.libraries) {
-        metaLibs = metaLibs.map(lib => ({
-          ...lib,
-          datasets: live.libraries[lib.name.toUpperCase()] ?? lib.datasets,
-        }));
-      }
-    } catch (e) { /* 타임아웃 또는 SAS 불가 시 YAML 데이터 그대로 사용 */ }
-
-    // 실제 데이터로 한 번만 렌더링 (깜빡임 없음)
-    renderLibTree(metaLibs);
+    renderLibTree(data.libraries || []);
   } catch (e) {
     document.getElementById('libTree').innerHTML =
       '<div style="padding:12px;font-size:12px;color:var(--text3);">라이브러리 로드 실패</div>';
