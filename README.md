@@ -1,8 +1,6 @@
 # SAS 9.4 Code Assistant
 
-자연어로 요청하면 SAS 코드를 자동 생성하고 SAS OnDemand for Academics(ODA)에서 실행·시각화해주는 웹 기반 AI 어시스턴트
-
-## 스크린샷
+자연어로 요청하면 SAS 코드를 자동 생성하고 SAS OnDemand for Academics에서 실행·시각화해주는 웹 기반 AI 어시스턴트
 
 > 브라우저에서 한국어로 분석 요청 → SAS 코드 생성 → SAS OnDemand for Academics 실행 → 결과 표·그래프 렌더링 → 한국어 요약
 
@@ -11,7 +9,7 @@
 | 기능 | 설명 |
 | --- | --- |
 | 자연어 → SAS 코드 | Claude가 요청을 SAS 코드로 변환 |
-| 자동 실행 | SASPy를 통해 SAS ODA에서 즉시 실행 |
+| 자동 실행 | SASPy를 통해 SAS OnDemand for Academics에서 즉시 실행 |
 | 에러 자동 수정 | 에러 발생 시 코드 수정 후 최대 3회 재시도 |
 | 결과 테이블 렌더링 | SAS HTML LST에서 테이블 추출·정제 후 브라우저 출력 |
 | 그래프 렌더링 | ODS HTML5 인라인 SVG 그래프 브라우저 렌더링 |
@@ -21,6 +19,7 @@
 | 컬럼 툴팁 | 데이터셋 hover 시 컬럼 이름·라벨·타입 표시 |
 | 데이터셋 관리 | 우클릭으로 이름 바꾸기 / 이동 / 삭제 |
 | 영구 저장 | MYLIB (`~/sas_workspace`) 에 데이터 영구 저장 |
+| MYLIB 자동 갱신 | 페이지 로드 시 MYLIB 백그라운드 조회 |
 | 세션 관리 | 여러 대화 세션, 유휴 타임아웃 자동 정리 |
 | SAS OnDemand for Academics Keepalive | 4분마다 ping으로 세션 타임아웃 방지 |
 | SSE 스트리밍 | 코드 생성 → 실행 → 요약 진행 상황 실시간 전달 |
@@ -38,7 +37,7 @@ code-assistant/
 │   └── index.html           # 단일 파일 SPA (라이브러리 트리, 채팅 UI, SSE 클라이언트)
 ├── sashelp/
 │   └── source/
-│       ├── sashelp_datasets.yml  # SASHELP 데이터셋 정의 (단일 소스)
+│       ├── sashelp_datasets.yml  # SASHELP 데이터셋 정의 50+ (단일 소스)
 │       ├── stat_procs.yml        # 주요 SAS 분석 프로시저 참조
 │       └── proc_sql_diff.yml     # PROC SQL vs 표준 SQL 차이점
 ├── SAS-ODA-JarFiles/        # SAS IOM 연결용 JAR 파일
@@ -125,8 +124,8 @@ uvicorn backend.main:app --reload --port 8000
 | --- | --- | --- |
 | GET | `/chat/stream` | SSE 스트리밍 (코드 생성 → 실행 → 요약) |
 | POST | `/session/reset` | 대화 세션 초기화 |
-| GET | `/libraries` | 라이브러리 트리 초기 로드 (YAML 기반) |
-| GET | `/libraries/refresh` | WORK / MYLIB / SASHELP 실시간 조회 |
+| GET | `/libraries` | 라이브러리 트리 초기 로드 (YAML 기반, 즉시 반환) |
+| GET | `/libraries/refresh` | WORK / MYLIB 실시간 조회 (`?initial=true` 시 MYLIB만) |
 | GET | `/libraries/columns` | 데이터셋 컬럼 정보 lazy 로드 |
 | POST | `/libraries/dataset` | 데이터셋 이름 바꾸기 / 이동 / 삭제 |
 | GET | `/health` | 서버 상태 확인 |
@@ -135,12 +134,13 @@ uvicorn backend.main:app --reload --port 8000
 
 | 라이브러리 | 설명 |
 | --- | --- |
-| `SASHELP` | 읽기 전용 샘플 데이터셋 (cars, iris, heart 등) |
+| `SASHELP` | 읽기 전용 샘플 데이터셋 50+ (YAML에서 즉시 로드, SAS 쿼리 없음) |
 | `WORK` | 세션 임시 라이브러리 (세션 종료 시 삭제) |
-| `MYLIB` | 영구 라이브러리 (`~/sas_workspace`, 세션 시작 시 자동 할당) |
+| `MYLIB` | 영구 라이브러리 (`~/sas_workspace`, 페이지 로드 시 백그라운드 갱신) |
 
 ## 주의사항
 
 - **Java 8 필수** — Eclipse Temurin 8 권장 (다른 버전은 SAS OnDemand for Academics IOM 연결 불가)
 - **SAS JAR 3개**는 SAS 지원 포털에서 별도 다운로드 필요 (라이선스 보호)
 - **MYLIB** 데이터는 `~/sas_workspace/`에 물리적으로 저장되며, 세션 재시작 시 자동 복원
+- **SASHELP** 메타데이터는 `sashelp_datasets.yml` 단일 소스 — 코드 생성 프롬프트에도 자동 주입 (top 데이터셋은 컬럼 상세 포함, 나머지는 이름만)
