@@ -4,7 +4,7 @@
 
 ## 스크린샷
 
-> 브라우저에서 한국어로 분석 요청 → SAS 코드 생성 → ODA 실행 → 결과 표·그래프 렌더링 → 한국어 요약
+> 브라우저에서 한국어로 분석 요청 → SAS 코드 생성 → SAS OnDemand for Academics 실행 → 결과 표·그래프 렌더링 → 한국어 요약
 
 ## 주요 기능
 
@@ -22,7 +22,7 @@
 | 데이터셋 관리 | 우클릭으로 이름 바꾸기 / 이동 / 삭제 |
 | 영구 저장 | MYLIB (`~/sas_workspace`) 에 데이터 영구 저장 |
 | 세션 관리 | 여러 대화 세션, 유휴 타임아웃 자동 정리 |
-| ODA Keepalive | 4분마다 ping으로 세션 타임아웃 방지 |
+| SAS OnDemand for Academics Keepalive | 4분마다 ping으로 세션 타임아웃 방지 |
 | SSE 스트리밍 | 코드 생성 → 실행 → 요약 진행 상황 실시간 전달 |
 
 ## 프로젝트 구조
@@ -42,7 +42,7 @@ code-assistant/
 │       ├── stat_procs.yml        # 주요 SAS 분석 프로시저 참조
 │       └── proc_sql_diff.yml     # PROC SQL vs 표준 SQL 차이점
 ├── SAS-ODA-JarFiles/        # SAS IOM 연결용 JAR 파일
-├── java.security.sas        # Java 암호화 정책 (SAS ODA 연결용)
+├── java.security.sas        # Java 암호화 정책 (SAS OnDemand for Academics 연결용)
 └── .env                     # API 키 및 설정
 ```
 
@@ -58,7 +58,7 @@ pip install saspy pandas fastapi uvicorn python-dotenv anthropic pyyaml
 
 ### 2. SAS JAR 파일 복사
 
-SAS ODA IOM 연결에 필요한 JAR 3개(`sas.rutil.jar`, `sas.rutil.nls.jar`, `sastpj.rutil.jar`)를 SAS 지원 포털에서 다운로드 후 복사:
+SAS OnDemand for Academics IOM 연결에 필요한 JAR 3개(`sas.rutil.jar`, `sas.rutil.nls.jar`, `sastpj.rutil.jar`)를 SAS 지원 포털에서 다운로드 후 복사:
 
 ```bash
 SASPY_JAVA=.venv/lib/python3.9/site-packages/saspy/java
@@ -87,7 +87,7 @@ oda = {
 }
 ```
 
-> **리전 확인**: SAS ODA 로그인 후 우측 상단에서 리전 확인
+> **리전 확인**: SAS OnDemand for Academics 로그인 후 우측 상단에서 리전 확인
 >
 > - Asia Pacific Region 2: `odaws01-apse1-2.oda.sas.com`
 
@@ -141,6 +141,6 @@ uvicorn backend.main:app --reload --port 8000
 
 ## 주의사항
 
-- **Java 8 필수** — Eclipse Temurin 8 권장 (다른 버전은 SAS ODA IOM 연결 불가)
+- **Java 8 필수** — Eclipse Temurin 8 권장 (다른 버전은 SAS OnDemand for Academics IOM 연결 불가)
 - **SAS JAR 3개**는 SAS 지원 포털에서 별도 다운로드 필요 (라이선스 보호)
 - **MYLIB** 데이터는 `~/sas_workspace/`에 물리적으로 저장되며, 세션 재시작 시 자동 복원

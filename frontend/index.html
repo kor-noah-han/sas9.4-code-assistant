@@ -694,7 +694,97 @@
       flex-direction: column;
       flex-shrink: 0;
       overflow: hidden;
+      position: relative;
     }
+
+    /* Library loading overlay — 스피너만 표시 */
+    .lib-overlay {
+      position: absolute;
+      top: 44px; left: 0; right: 0; bottom: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 50;
+      pointer-events: none;
+    }
+    .lib-overlay.hidden { display: none; }
+    .lib-spinner {
+      width: 22px; height: 22px;
+      border: 2.5px solid var(--border2);
+      border-top-color: var(--blue);
+      border-radius: 50%;
+      animation: spin 0.7s linear infinite;
+    }
+
+    /* Custom modal dialog */
+    .modal-backdrop {
+      position: fixed; inset: 0;
+      background: rgba(0,0,0,0.25);
+      display: flex; align-items: center; justify-content: center;
+      z-index: 10000;
+    }
+    .modal-box {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.15);
+      padding: 24px 24px 18px;
+      min-width: 300px;
+      max-width: 400px;
+    }
+    .modal-title {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text);
+      margin-bottom: 8px;
+    }
+    .modal-msg {
+      font-size: 13px;
+      color: var(--text2);
+      margin-bottom: 20px;
+      line-height: 1.5;
+      word-break: break-all;
+    }
+    .modal-input {
+      width: 100%;
+      font-size: 13px;
+      padding: 8px 10px;
+      border: 1px solid var(--border);
+      border-radius: 7px;
+      outline: none;
+      background: var(--bg3);
+      color: var(--text);
+      margin-bottom: 16px;
+    }
+    .modal-input:focus { border-color: var(--blue); }
+    .modal-btns {
+      display: flex;
+      justify-content: flex-end;
+      gap: 8px;
+    }
+    .modal-btn {
+      padding: 7px 18px;
+      font-size: 13px;
+      border-radius: 7px;
+      border: 1px solid var(--border);
+      background: var(--bg3);
+      color: var(--text);
+      cursor: pointer;
+      font-family: var(--font);
+    }
+    .modal-btn:hover { background: var(--bg4); }
+    .modal-btn.modal-btn-primary {
+      background: var(--blue);
+      color: #fff;
+      border-color: var(--blue);
+    }
+    .modal-btn.modal-btn-primary:hover { background: var(--blue2); }
+    .modal-btn.modal-btn-danger {
+      background: var(--red);
+      color: #fff;
+      border-color: var(--red);
+    }
+    .modal-btn.modal-btn-danger:hover { background: #a82020; }
 
     .lib-scroll {
       flex: 1;
@@ -993,6 +1083,19 @@
 <!-- 데이터셋 컬럼 말풍선 툴팁 (position:fixed로 사이드바 밖으로 튀어나옴) -->
 <div id="ds-tooltip"></div>
 
+<!-- Custom confirm/prompt modal -->
+<div id="appModal" class="modal-backdrop" style="display:none;">
+  <div class="modal-box">
+    <div class="modal-title" id="modalTitle"></div>
+    <div class="modal-msg" id="modalMsg"></div>
+    <input class="modal-input" id="modalInput" style="display:none;">
+    <div class="modal-btns">
+      <button class="modal-btn" id="modalCancel">취소</button>
+      <button class="modal-btn modal-btn-primary" id="modalOk">확인</button>
+    </div>
+  </div>
+</div>
+
 <!-- Dataset right-click context menu -->
 <div id="dsCtxMenu" class="ctx-menu">
   <div class="ctx-item" id="ctxRename">
@@ -1085,6 +1188,9 @@
       </button>
     </div>
     <div class="lib-scroll" id="libTree"></div>
+    <div class="lib-overlay" id="libOverlay">
+      <div class="lib-spinner"></div>
+    </div>
   </div>
 
 </div>
@@ -1203,8 +1309,17 @@ function createWelcome() {
 let _writableLibs = new Set();
 
 // ── Libraries ─────────────────────────────────────────────────────────────────
+const _libOverlay = document.getElementById('libOverlay');
+
+function _setLibLoading(on) {
+  if (on) _libOverlay.classList.remove('hidden');
+  else     _libOverlay.classList.add('hidden');
+}
+
 async function loadLibraries() {
+  _setLibLoading(true);
   try {
+    // 메타데이터 (top_names, writable 여부) 먼저 가져오기
     const res = await fetch('/libraries');
     const data = await res.json();
     if (data.top_names) {
@@ -1215,12 +1330,15 @@ async function loadLibraries() {
         if (lib.writable) _writableLibs.add(lib.name.toUpperCase());
       });
     }
+    // 빈 트리 구조만 먼저 렌더 (오버레이로 가려짐)
     renderLibTree(data.libraries);
-    // 페이지 로드 시 WORK/MYLIB/SASHELP 실시간 데이터 자동 로드
-    _bgRefresh();
+    // 실시간 데이터 로드 후 오버레이 제거
+    await _bgRefresh();
   } catch (e) {
     document.getElementById('libTree').innerHTML =
       '<div style="padding:12px;font-size:12px;color:var(--text3);">라이브러리 로드 실패</div>';
+  } finally {
+    _setLibLoading(false);
   }
 }
 
@@ -1847,6 +1965,76 @@ else {
 
 loadLibraries();
 
+// ── Custom Modal (confirm / prompt) ───────────────────────────────────────────
+const _modal        = document.getElementById('appModal');
+const _modalTitle   = document.getElementById('modalTitle');
+const _modalMsg     = document.getElementById('modalMsg');
+const _modalInput   = document.getElementById('modalInput');
+const _modalCancel  = document.getElementById('modalCancel');
+const _modalOk      = document.getElementById('modalOk');
+let _modalResolve   = null;
+
+function _modalClose(val) {
+  _modal.style.display = 'none';
+  _modalInput.style.display = 'none';
+  if (_modalResolve) { _modalResolve(val); _modalResolve = null; }
+}
+
+_modalCancel.addEventListener('click', () => _modalClose(null));
+_modal.addEventListener('click', (e) => { if (e.target === _modal) _modalClose(null); });
+document.addEventListener('keydown', (e) => {
+  if (_modal.style.display !== 'none' && e.key === 'Escape') _modalClose(null);
+  if (_modal.style.display !== 'none' && e.key === 'Enter' && e.target === _modalInput) _modalClose(_modalInput.value);
+});
+
+function showAlert(title, msg) {
+  return new Promise(resolve => {
+    _modalTitle.textContent = title;
+    _modalMsg.textContent = msg;
+    _modalInput.style.display = 'none';
+    _modalCancel.style.display = 'none';
+    _modalOk.className = 'modal-btn modal-btn-primary';
+    _modalOk.textContent = '확인';
+    _modalOk.onclick = () => { _modalCancel.style.display = ''; _modalClose(true); };
+    _modal.style.display = 'flex';
+    _modalResolve = resolve;
+  });
+}
+
+function showConfirm(title, msg, okLabel = '확인', danger = false) {
+  return new Promise(resolve => {
+    _modalTitle.textContent = title;
+    _modalMsg.textContent = msg;
+    _modalInput.style.display = 'none';
+    _modalCancel.style.display = '';
+    _modalCancel.textContent = '취소';
+    _modalOk.className = 'modal-btn ' + (danger ? 'modal-btn-danger' : 'modal-btn-primary');
+    _modalOk.textContent = okLabel;
+    _modalOk.onclick = () => _modalClose(true);
+    _modalCancel.onclick = () => _modalClose(false);
+    _modal.style.display = 'flex';
+    _modalResolve = resolve;
+  });
+}
+
+function showPrompt(title, msg, defaultVal = '') {
+  return new Promise(resolve => {
+    _modalTitle.textContent = title;
+    _modalMsg.textContent = msg;
+    _modalInput.style.display = 'block';
+    _modalInput.value = defaultVal;
+    _modalCancel.style.display = '';
+    _modalCancel.textContent = '취소';
+    _modalOk.className = 'modal-btn modal-btn-primary';
+    _modalOk.textContent = '확인';
+    _modalOk.onclick = () => _modalClose(_modalInput.value);
+    _modalCancel.onclick = () => _modalClose(null);
+    _modal.style.display = 'flex';
+    _modalResolve = resolve;
+    setTimeout(() => { _modalInput.focus(); _modalInput.select(); }, 50);
+  });
+}
+
 // ── Dataset Context Menu ───────────────────────────────────────────────────────
 let _ctxDs = null;
 const _ctxMenu  = document.getElementById('dsCtxMenu');
@@ -1881,11 +2069,11 @@ document.getElementById('ctxRename').addEventListener('click', async () => {
   if (!_ctxDs) return;
   const { libRef, ds } = _ctxDs;
   hideCtxMenu();
-  const newName = prompt(`"${ds.name}" 의 새 이름:`, ds.name);
+  const newName = await showPrompt('이름 바꾸기', `${libRef}.${ds.name}`, ds.name);
   if (!newName || newName.trim() === ds.name) return;
   const n = newName.trim().toUpperCase();
   if (!/^[A-Z_][A-Z0-9_]{0,31}$/.test(n)) {
-    alert('SAS 이름 규칙: 영문자/_로 시작, 영문자/숫자/_ 조합, 최대 32자');
+    await showAlert('이름 오류', 'SAS 이름 규칙: 영문자/_로 시작, 영문자/숫자/_ 조합, 최대 32자');
     return;
   }
   await _dsOp({ lib: libRef, name: ds.name, action: 'rename', new_name: n });
@@ -1921,7 +2109,12 @@ document.getElementById('ctxDelete').addEventListener('click', async () => {
   if (!_ctxDs) return;
   const { libRef, ds } = _ctxDs;
   hideCtxMenu();
-  if (!confirm(`"${libRef}.${ds.name}" 을(를) 삭제하시겠습니까?\n이 작업은 되돌릴 수 없습니다.`)) return;
+  const ok = await showConfirm(
+    '데이터셋 삭제',
+    `"${libRef}.${ds.name}"을(를) 삭제하시겠습니까?\n이 작업은 되돌릴 수 없습니다.`,
+    '삭제', true
+  );
+  if (!ok) return;
   await _dsOp({ lib: libRef, name: ds.name, action: 'delete' });
 });
 
