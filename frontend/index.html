@@ -1334,9 +1334,15 @@ async function loadLibraries() {
       metaLibs = meta.libraries;
     }
 
-    // 2단계: 실시간 데이터 (SAS 세션 필요, 느림) — 실패하면 YAML 데이터 사용
+    // 2단계: MYLIB만 조회 (초기 로드 — WORK는 항상 비어있음, SASHELP는 YAML 사용)
     try {
-      const liveRes = await fetch(`/libraries/refresh?session_id=${encodeURIComponent(activeId || '')}`);
+      const ctrl = new AbortController();
+      const tid = setTimeout(() => ctrl.abort(), 30000); // 30초 타임아웃
+      const liveRes = await fetch(
+        `/libraries/refresh?initial=true&session_id=${encodeURIComponent(activeId || '')}`,
+        { signal: ctrl.signal }
+      );
+      clearTimeout(tid);
       const live = await liveRes.json();
       if (live.libraries) {
         metaLibs = metaLibs.map(lib => ({
@@ -1344,7 +1350,7 @@ async function loadLibraries() {
           datasets: live.libraries[lib.name.toUpperCase()] ?? lib.datasets,
         }));
       }
-    } catch (e) { /* SAS 불가 시 YAML 데이터 그대로 사용 */ }
+    } catch (e) { /* 타임아웃 또는 SAS 불가 시 YAML 데이터 그대로 사용 */ }
 
     // 실제 데이터로 한 번만 렌더링 (깜빡임 없음)
     renderLibTree(metaLibs);

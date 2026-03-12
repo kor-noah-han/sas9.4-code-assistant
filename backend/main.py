@@ -207,12 +207,12 @@ async def reset_session(session_id: str = "default"):
     return {"status": "reset"}
 
 
-def _query_dynamic_libs(executor: SASExecutor) -> dict[str, list]:
-    """WORK / MYLIB / SASHELP 라이브러리의 데이터셋 목록을 SAS에서 실시간 조회.
-    각 데이터셋을 한 줄씩 출력 → macro variable 길이 제한 없음.
+def _query_dynamic_libs(executor: SASExecutor, libregs: tuple = ("WORK", "MYLIB")) -> dict[str, list]:
+    """지정된 라이브러리의 데이터셋 목록을 SAS에서 실시간 조회.
+    SASHELP는 정적(sashelp_datasets.yml)이므로 포함하지 않음.
     """
     result = {}
-    for libref in ("WORK", "MYLIB", "SASHELP"):
+    for libref in libregs:
         try:
             r = executor.execute(f"""
                 options linesize=256;
@@ -328,19 +328,26 @@ async def get_libraries():
 
 
 @app.get("/libraries/refresh")
-async def refresh_libraries(session_id: str = ""):
-    """WORK / SASUSER 데이터셋 목록을 SAS에서 실시간 조회.
-    session_id가 있으면 해당 채팅 세션의 SAS 연결을 재사용 (WORK 공유).
+async def refresh_libraries(session_id: str = "", initial: bool = False):
+    """WORK / MYLIB 데이터셋 목록을 SAS에서 실시간 조회.
+    initial=True 이면 MYLIB만 조회 (초기 로드 — WORK는 항상 비어있음).
+    session_id가 있으면 해당 채팅 세션의 SAS 연결을 재사용.
     """
+    libregs = ("MYLIB",) if initial else ("WORK", "MYLIB")
     try:
         if session_id and session_id in _sessions:
             executor = _sessions[session_id]["executor"]
         else:
             executor = _get_lib_executor()
-        dynamic = await asyncio.to_thread(_query_dynamic_libs, executor)
+        dynamic = await asyncio.wait_for(
+            asyncio.to_thread(_query_dynamic_libs, executor, libregs),
+            timeout=25,
+        )
         return {"libraries": dynamic}
+    except asyncio.TimeoutError:
+        return {"error": "timeout", "libraries": {k: [] for k in libregs}}
     except Exception as e:
-        return {"error": str(e), "libraries": {"WORK": [], "MYLIB": []}}
+        return {"error": str(e), "libraries": {k: [] for k in libregs}}
 
 
 @app.get("/libraries/columns")
