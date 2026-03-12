@@ -37,14 +37,18 @@ if _procs_path.exists():
     _stat_procs = "\n".join(lines)
 
 # sashelp 데이터셋 목록 로드 (단일 소스: sashelp_datasets.yml)
+# top: true → 컬럼명 포함, top: false → 이름+라벨만 (토큰 절약)
 _ds_path = _root / "sashelp/source/sashelp_datasets.yml"
 _sashelp_ds_ref = ""
 if _ds_path.exists():
     _ds_data = yaml.safe_load(_ds_path.read_text(encoding="utf-8"))
     _ds_lines = []
     for d in _ds_data.get("datasets", []):
-        cols = ", ".join(c["name"] for c in d.get("columns", []))
-        _ds_lines.append(f"- sashelp.{d['name']}: {d.get('label', '')} | columns: {cols}")
+        if d.get("top", False):
+            cols = ", ".join(c["name"] for c in d.get("columns", []))
+            _ds_lines.append(f"- sashelp.{d['name']}: {d.get('label', '')} | columns: {cols}")
+        else:
+            _ds_lines.append(f"- sashelp.{d['name']}: {d.get('label', '')}")
     _sashelp_ds_ref = "\n".join(_ds_lines)
 
 SYSTEM_PROMPT = """You are a SAS programming expert for SAS OnDemand for Academics (ODA).

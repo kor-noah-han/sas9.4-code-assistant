@@ -7,20 +7,20 @@ datasets:
     label: "Automobiles (428 obs)"
     top: true
     columns:
-      - {name: Make,        label: "Make of vehicle",                    type: C}
-      - {name: Model,       label: "Model name",                         type: C}
-      - {name: Type,        label: "Vehicle type",                       type: C}
-      - {name: Origin,      label: "Region of origin",                   type: C}
-      - {name: MSRP,        label: "Manufacturer's Suggested Retail Price", type: N}
-      - {name: Invoice,     label: "Invoice price",                      type: N}
-      - {name: EngineSize,  label: "Engine size (L)",                    type: N}
-      - {name: Cylinders,   label: "Number of cylinders",                type: N}
-      - {name: Horsepower,  label: "Horsepower",                         type: N}
-      - {name: MPG_City,    label: "City miles per gallon",              type: N}
-      - {name: MPG_Highway, label: "Highway miles per gallon",           type: N}
-      - {name: Weight,      label: "Weight (lbs)",                       type: N}
-      - {name: Wheelbase,   label: "Wheelbase (in)",                     type: N}
-      - {name: Length,      label: "Length (in)",                        type: N}
+      - {name: Make,        label: "Make of vehicle",                       type: C}
+      - {name: Model,       label: "Model name",                            type: C}
+      - {name: Type,        label: "Vehicle type",                          type: C}
+      - {name: Origin,      label: "Region of origin",                      type: C}
+      - {name: MSRP,        label: "Manufacturer's Suggested Retail Price",  type: N}
+      - {name: Invoice,     label: "Invoice price",                         type: N}
+      - {name: EngineSize,  label: "Engine size (L)",                       type: N}
+      - {name: Cylinders,   label: "Number of cylinders",                   type: N}
+      - {name: Horsepower,  label: "Horsepower",                            type: N}
+      - {name: MPG_City,    label: "City miles per gallon",                 type: N}
+      - {name: MPG_Highway, label: "Highway miles per gallon",              type: N}
+      - {name: Weight,      label: "Weight (lbs)",                          type: N}
+      - {name: Wheelbase,   label: "Wheelbase (in)",                        type: N}
+      - {name: Length,      label: "Length (in)",                           type: N}
 
   - name: class
     label: "Student Body Measurements (19 obs)"
@@ -46,38 +46,49 @@ datasets:
     label: "Framingham Heart Study (5209 obs)"
     top: true
     columns:
-      - {name: Status,      label: "Vital status",              type: C}
-      - {name: DeathCause,  label: "Cause of death",            type: C}
-      - {name: AgeCHDdiag,  label: "Age at CHD diagnosis",      type: N}
-      - {name: Smoking,     label: "Cigarettes per day",        type: N}
-      - {name: Sex,         label: "Sex",                       type: C}
-      - {name: AgeAtStart,  label: "Age at study start",        type: N}
-      - {name: Height,      label: "Height (cm)",               type: N}
-      - {name: Weight,      label: "Weight (kg)",               type: N}
-      - {name: Diastolic,   label: "Diastolic blood pressure",  type: N}
-      - {name: Systolic,    label: "Systolic blood pressure",   type: N}
+      - {name: Status,      label: "Vital status",                 type: C}
+      - {name: DeathCause,  label: "Cause of death",               type: C}
+      - {name: AgeCHDdiag,  label: "Age at CHD diagnosis",         type: N}
+      - {name: Smoking,     label: "Cigarettes per day",           type: N}
+      - {name: Sex,         label: "Sex",                          type: C}
+      - {name: AgeAtStart,  label: "Age at study start",           type: N}
+      - {name: Height,      label: "Height (cm)",                  type: N}
+      - {name: Weight,      label: "Weight (kg)",                  type: N}
+      - {name: Diastolic,   label: "Diastolic blood pressure",     type: N}
+      - {name: Systolic,    label: "Systolic blood pressure",      type: N}
       - {name: MRW,         label: "Metropolitan relative weight", type: N}
-      - {name: Cholesterol, label: "Total cholesterol",         type: N}
+      - {name: Cholesterol, label: "Total cholesterol",            type: N}
 
   - name: baseball
     label: "Baseball Salaries (322 obs)"
     top: true
     columns:
-      - {name: Name,     label: "Player name",           type: C}
-      - {name: nAtBat,   label: "At bats in 1986",       type: N}
-      - {name: nHits,    label: "Hits in 1986",          type: N}
-      - {name: nHome,    label: "Home runs in 1986",     type: N}
-      - {name: nRuns,    label: "Runs in 1986",          type: N}
-      - {name: nRBI,     label: "RBIs in 1986",          type: N}
-      - {name: nBB,      label: "Walks in 1986",         type: N}
-      - {name: YrMajor,  label: "Years in major leagues",type: N}
-      - {name: Salary,   label: "1987 annual salary ($K)", type: N}
-      - {name: Team,     label: "Team",                  type: C}
-      - {name: LeagueID, label: "League",                type: C}
-      - {name: Division, label: "Division",              type: C}
+      - {name: Name,     label: "Player name",            type: C}
+      - {name: nAtBat,   label: "At bats in 1986",        type: N}
+      - {name: nHits,    label: "Hits in 1986",           type: N}
+      - {name: nHome,    label: "Home runs in 1986",      type: N}
+      - {name: nRuns,    label: "Runs in 1986",           type: N}
+      - {name: nRBI,     label: "RBIs in 1986",           type: N}
+      - {name: nBB,      label: "Walks in 1986",          type: N}
+      - {name: YrMajor,  label: "Years in major leagues", type: N}
+      - {name: CrAtBat,  label: "Career at bats",         type: N}
+      - {name: CrHits,   label: "Career hits",            type: N}
+      - {name: CrHome,   label: "Career home runs",       type: N}
+      - {name: CrRuns,   label: "Career runs",            type: N}
+      - {name: CrRBI,    label: "Career RBIs",            type: N}
+      - {name: CrBB,     label: "Career walks",           type: N}
+      - {name: Salary,   label: "1987 annual salary ($K)",type: N}
+      - {name: Div,      label: "Division",               type: C}
+      - {name: League,   label: "League",                 type: C}
+      - {name: Team,     label: "Team",                   type: C}
+      - {name: Position, label: "Playing position",       type: C}
+      - {name: nOuts,    label: "Put outs in 1986",       type: N}
+      - {name: nAssts,   label: "Assists in 1986",        type: N}
+      - {name: nError,   label: "Errors in 1986",         type: N}
+      - {name: logSalary,label: "Log of salary",          type: N}
 
   - name: stocks
-    label: "Daily Stock Prices"
+    label: "Daily Stock Prices (3 stocks, 1996–2005)"
     top: true
     columns:
       - {name: Stock,  label: "Stock ticker name",  type: C}
@@ -92,19 +103,19 @@ datasets:
     label: "Product Sales (1440 obs)"
     top: true
     columns:
-      - {name: COUNTRY,  label: "Country",          type: C}
-      - {name: REGION,   label: "Region",           type: C}
-      - {name: DIVISION, label: "Division",         type: C}
-      - {name: PRODTYPE, label: "Product type",     type: C}
-      - {name: PRODUCT,  label: "Product name",     type: C}
-      - {name: QUARTER,  label: "Quarter",          type: C}
-      - {name: YEAR,     label: "Year",             type: N}
-      - {name: MONTH,    label: "Month",            type: C}
-      - {name: ACTUAL,   label: "Actual sales",     type: N}
-      - {name: PREDICT,  label: "Predicted sales",  type: N}
+      - {name: COUNTRY,  label: "Country",           type: C}
+      - {name: REGION,   label: "Region",            type: C}
+      - {name: DIVISION, label: "Division",          type: C}
+      - {name: PRODTYPE, label: "Product type",      type: C}
+      - {name: PRODUCT,  label: "Product name",      type: C}
+      - {name: QUARTER,  label: "Quarter",           type: C}
+      - {name: YEAR,     label: "Year",              type: N}
+      - {name: MONTH,    label: "Month",             type: C}
+      - {name: ACTUAL,   label: "Actual sales",      type: N}
+      - {name: PREDICT,  label: "Predicted sales",   type: N}
 
   - name: air
-    label: "Air Passengers (144 obs)"
+    label: "Monthly Air Passengers (144 obs, 1949–1960)"
     top: true
     columns:
       - {name: date, label: "Month",                   type: N}
@@ -114,25 +125,587 @@ datasets:
     label: "US City Crime Rates (46 obs)"
     top: true
     columns:
-      - {name: City,    label: "City name",              type: C}
-      - {name: Murder,  label: "Murder rate",            type: N}
-      - {name: Rape,    label: "Rape rate",              type: N}
-      - {name: Robbery, label: "Robbery rate",           type: N}
-      - {name: Assault, label: "Assault rate",           type: N}
-      - {name: Burglary,label: "Burglary rate",          type: N}
-      - {name: Larceny, label: "Larceny rate",           type: N}
-      - {name: Auto,    label: "Auto theft rate",        type: N}
+      - {name: City,    label: "City name",      type: C}
+      - {name: Murder,  label: "Murder rate",    type: N}
+      - {name: Rape,    label: "Rape rate",      type: N}
+      - {name: Robbery, label: "Robbery rate",   type: N}
+      - {name: Assault, label: "Assault rate",   type: N}
+      - {name: Burglary,label: "Burglary rate",  type: N}
+      - {name: Larceny, label: "Larceny rate",   type: N}
+      - {name: Auto,    label: "Auto theft rate",type: N}
 
   - name: shoes
     label: "Shoe Store Sales"
     top: true
     columns:
-      - {name: Region,   label: "Sales region",  type: C}
-      - {name: Product,  label: "Product type",  type: C}
-      - {name: Stores,   label: "Number of stores", type: N}
-      - {name: Sales,    label: "Total sales",    type: N}
-      - {name: Inventory,label: "Inventory",      type: N}
-      - {name: Returns,  label: "Returns",        type: N}
+      - {name: Region,    label: "Sales region",     type: C}
+      - {name: Product,   label: "Product type",     type: C}
+      - {name: Stores,    label: "Number of stores", type: N}
+      - {name: Sales,     label: "Total sales",      type: N}
+      - {name: Inventory, label: "Inventory",        type: N}
+      - {name: Returns,   label: "Returns",          type: N}
+
+  # ── 추가 데이터셋 ───────────────────────────────────────────────────────────
+
+  - name: abrasion
+    label: "Abrasion Loss Data (30 obs)"
+    top: false
+    columns:
+      - {name: hardness, label: "Hardness of rubber",       type: N}
+      - {name: tensile,  label: "Tensile strength",         type: N}
+      - {name: abrasion, label: "Abrasion loss",            type: N}
+
+  - name: admit
+    label: "Hospital Admissions (21 obs)"
+    top: false
+    columns:
+      - {name: ID,        label: "Patient ID",              type: N}
+      - {name: Age,       label: "Age",                     type: N}
+      - {name: Sex,       label: "Sex (1=male, 2=female)",  type: N}
+      - {name: Race,      label: "Race",                    type: N}
+      - {name: Weight,    label: "Weight (kg)",             type: N}
+      - {name: Income,    label: "Income",                  type: N}
+      - {name: Diastolic, label: "Diastolic blood pressure",type: N}
+      - {name: Systolic,  label: "Systolic blood pressure", type: N}
+      - {name: Pain,      label: "Pain level",              type: N}
+      - {name: Pressure,  label: "Chest pressure",         type: N}
+      - {name: Temp,      label: "Temperature",             type: N}
+
+  - name: airline
+    label: "US Airline Cost Model (90 obs)"
+    top: false
+    columns:
+      - {name: Airline, label: "Airline ID",                    type: N}
+      - {name: Year,    label: "Year",                          type: N}
+      - {name: Cost,    label: "Total cost (millions)",         type: N}
+      - {name: Output,  label: "Revenue passenger miles (bn)",  type: N}
+      - {name: PFuel,   label: "Fuel price index",              type: N}
+      - {name: LF,      label: "Load factor",                   type: N}
+
+  - name: applianc
+    label: "Appliance Sales Time Series (84 obs)"
+    top: false
+    columns:
+      - {name: date,  label: "Date",            type: N}
+      - {name: sales, label: "Appliance sales", type: N}
+
+  - name: arsenic
+    label: "Arsenic Data (100 obs)"
+    top: false
+    columns:
+      - {name: State,   label: "State",                   type: C}
+      - {name: County,  label: "County",                  type: C}
+      - {name: Arsenic, label: "Arsenic concentration",   type: N}
+
+  - name: bdose
+    label: "Binary Dose Response (18 obs)"
+    top: false
+    columns:
+      - {name: dose,   label: "Dose level",          type: N}
+      - {name: n,      label: "Number of subjects",  type: N}
+      - {name: nresp,  label: "Number responding",   type: N}
+
+  - name: bimetal
+    label: "Bimetallic Strip Data (50 obs)"
+    top: false
+    columns:
+      - {name: temp,    label: "Temperature",       type: N}
+      - {name: deflect, label: "Deflection (mm)",   type: N}
+
+  - name: bmicat
+    label: "BMI Category Thresholds"
+    top: false
+    columns:
+      - {name: BMI,      label: "BMI value",          type: N}
+      - {name: Category, label: "BMI category label", type: C}
+
+  - name: bmimen
+    label: "BMI Distribution for Men"
+    top: false
+    columns:
+      - {name: AgeGroup, label: "Age group",           type: C}
+      - {name: BMI,      label: "Body mass index",     type: N}
+      - {name: Percent,  label: "Percent in category", type: N}
+
+  - name: bodyfat
+    label: "Body Fat Measurements (252 obs)"
+    top: false
+    columns:
+      - {name: Case,     label: "Case number",                  type: N}
+      - {name: PctFat,   label: "Percent body fat",             type: N}
+      - {name: Density,  label: "Body density",                 type: N}
+      - {name: Age,      label: "Age (years)",                  type: N}
+      - {name: Weight,   label: "Weight (lbs)",                 type: N}
+      - {name: Height,   label: "Height (in)",                  type: N}
+      - {name: Neck,     label: "Neck circumference (cm)",      type: N}
+      - {name: Chest,    label: "Chest circumference (cm)",     type: N}
+      - {name: Abdomen,  label: "Abdomen circumference (cm)",   type: N}
+      - {name: Hip,      label: "Hip circumference (cm)",       type: N}
+      - {name: Thigh,    label: "Thigh circumference (cm)",     type: N}
+      - {name: Knee,     label: "Knee circumference (cm)",      type: N}
+      - {name: Ankle,    label: "Ankle circumference (cm)",     type: N}
+      - {name: Biceps,   label: "Biceps circumference (cm)",    type: N}
+      - {name: Forearm,  label: "Forearm circumference (cm)",   type: N}
+      - {name: Wrist,    label: "Wrist circumference (cm)",     type: N}
+
+  - name: cancer
+    label: "Cancer Survival Data (64 obs)"
+    top: false
+    columns:
+      - {name: organ,    label: "Organ (cancer type)",    type: C}
+      - {name: time,     label: "Survival time (days)",   type: N}
+      - {name: status,   label: "Status (1=dead, 0=censored)", type: N}
+
+  - name: cert
+    label: "Certification Test Scores (64 obs)"
+    top: false
+    columns:
+      - {name: subj,   label: "Subject ID",           type: N}
+      - {name: score1, label: "Score on test 1",      type: N}
+      - {name: score2, label: "Score on test 2",      type: N}
+
+  - name: citiday
+    label: "US City Daily Temperatures (365 obs)"
+    top: false
+    columns:
+      - {name: date,    label: "Day of year",          type: N}
+      - {name: chicago, label: "Chicago temp (°F)",    type: N}
+      - {name: dallas,  label: "Dallas temp (°F)",     type: N}
+      - {name: seattle, label: "Seattle temp (°F)",    type: N}
+      - {name: miami,   label: "Miami temp (°F)",      type: N}
+
+  - name: city
+    label: "US City Data (49 obs)"
+    top: false
+    columns:
+      - {name: name,   label: "City name",             type: C}
+      - {name: pop,    label: "Population",            type: N}
+      - {name: lat,    label: "Latitude",              type: N}
+      - {name: long,   label: "Longitude",             type: N}
+      - {name: state,  label: "State abbreviation",    type: C}
+
+  - name: classfit
+    label: "Student Data with Fitted Values (19 obs)"
+    top: false
+    columns:
+      - {name: Name,    label: "Student name",         type: C}
+      - {name: Sex,     label: "Sex (F/M)",            type: C}
+      - {name: Age,     label: "Age in years",         type: N}
+      - {name: Height,  label: "Height (in)",          type: N}
+      - {name: Weight,  label: "Weight (lbs)",         type: N}
+      - {name: Pred,    label: "Predicted weight",     type: N}
+      - {name: Resid,   label: "Residual",             type: N}
+
+  - name: cluster
+    label: "Cluster Analysis Sample Data (30 obs)"
+    top: false
+    columns:
+      - {name: x, label: "X coordinate", type: N}
+      - {name: y, label: "Y coordinate", type: N}
+
+  - name: demographics
+    label: "US Demographics by County (3140 obs)"
+    top: false
+    columns:
+      - {name: State,      label: "State name",                       type: C}
+      - {name: County,     label: "County name",                      type: C}
+      - {name: Population, label: "Population",                       type: N}
+      - {name: White,      label: "White population",                 type: N}
+      - {name: Black,      label: "Black population",                 type: N}
+      - {name: AmericanIndian, label: "American Indian population",   type: N}
+      - {name: AsianPI,    label: "Asian/Pacific Islander population",type: N}
+      - {name: Other,      label: "Other race population",            type: N}
+      - {name: Hispanic,   label: "Hispanic population",              type: N}
+      - {name: Age18_64,   label: "Population age 18–64",            type: N}
+      - {name: Over64,     label: "Population over 64",               type: N}
+      - {name: MedHouseInc,label: "Median household income",          type: N}
+
+  - name: diabetes
+    label: "Diabetes Clinical Trial (442 obs)"
+    top: false
+    columns:
+      - {name: age,    label: "Age",                          type: N}
+      - {name: sex,    label: "Sex",                          type: N}
+      - {name: bmi,    label: "Body mass index",              type: N}
+      - {name: map,    label: "Mean arterial pressure",       type: N}
+      - {name: tc,     label: "Total cholesterol",            type: N}
+      - {name: ldl,    label: "LDL cholesterol",              type: N}
+      - {name: hdl,    label: "HDL cholesterol",              type: N}
+      - {name: tch,    label: "T-Cells count",                type: N}
+      - {name: ltg,    label: "Log triglycerides",            type: N}
+      - {name: glu,    label: "Blood glucose",                type: N}
+      - {name: y,      label: "Disease progression (response)",type: N}
+
+  - name: diesel
+    label: "Diesel Emissions Data (32 obs)"
+    top: false
+    columns:
+      - {name: speed,   label: "Engine speed (rpm)",     type: N}
+      - {name: HC,      label: "Hydrocarbon emission",   type: N}
+      - {name: CO,      label: "Carbon monoxide",        type: N}
+      - {name: CO2,     label: "Carbon dioxide",         type: N}
+      - {name: NOx,     label: "Nitrogen oxide",         type: N}
+
+  - name: dietstudy
+    label: "Diet Study Data (300 obs)"
+    top: false
+    columns:
+      - {name: patientID, label: "Patient ID",           type: N}
+      - {name: diet,      label: "Diet group",           type: C}
+      - {name: age,       label: "Age",                  type: N}
+      - {name: cholest1,  label: "Baseline cholesterol", type: N}
+      - {name: cholest3,  label: "Cholesterol at 3 mo",  type: N}
+      - {name: cholest6,  label: "Cholesterol at 6 mo",  type: N}
+
+  - name: electric
+    label: "Electric Utility Data (22 obs)"
+    top: false
+    columns:
+      - {name: Company,  label: "Utility company",       type: C}
+      - {name: cost,     label: "Average cost per kWh",  type: N}
+      - {name: kwh,      label: "Annual output (kWh)",   type: N}
+      - {name: load,     label: "Load factor",           type: N}
+      - {name: peak,     label: "Peak kWh demand",       type: N}
+      - {name: plant,    label: "Plant size (MW)",       type: N}
+      - {name: nuclear,  label: "Nuclear fraction",      type: N}
+      - {name: hydro,    label: "Hydro fraction",        type: N}
+      - {name: fossil,   label: "Fossil fuel fraction",  type: N}
+
+  - name: enso
+    label: "El Nino/Southern Oscillation (168 obs)"
+    top: false
+    columns:
+      - {name: Month,    label: "Month (numeric)",        type: N}
+      - {name: Year,     label: "Year",                   type: N}
+      - {name: Pressure, label: "Atmospheric pressure",   type: N}
+
+  - name: esoph
+    label: "Esophageal Cancer Case-Control (88 obs)"
+    top: false
+    columns:
+      - {name: agegp,   label: "Age group",               type: C}
+      - {name: alcgp,   label: "Alcohol consumption group",type: C}
+      - {name: tobgp,   label: "Tobacco consumption group",type: C}
+      - {name: ncases,  label: "Number of cases",         type: N}
+      - {name: ncontrols,label: "Number of controls",     type: N}
+
+  - name: failure
+    label: "Failure Time Data (24 obs)"
+    top: false
+    columns:
+      - {name: time,   label: "Failure time",             type: N}
+      - {name: censor, label: "Censoring indicator",      type: N}
+      - {name: group,  label: "Treatment group",          type: N}
+
+  - name: fish
+    label: "Fish Measurement Data (158 obs)"
+    top: false
+    columns:
+      - {name: Species, label: "Fish species",            type: C}
+      - {name: Weight,  label: "Weight (g)",              type: N}
+      - {name: Length1, label: "Length 1 - body (cm)",    type: N}
+      - {name: Length2, label: "Length 2 - tail (cm)",    type: N}
+      - {name: Length3, label: "Length 3 - total (cm)",   type: N}
+      - {name: Height,  label: "Height (cm)",             type: N}
+      - {name: Width,   label: "Diagonal width (cm)",     type: N}
+
+  - name: fitness
+    label: "Fitness Club Physical Data (31 obs)"
+    top: false
+    columns:
+      - {name: age,      label: "Age (years)",            type: N}
+      - {name: weight,   label: "Weight (kg)",            type: N}
+      - {name: oxygen,   label: "Oxygen uptake (mL/min)", type: N}
+      - {name: runtime,  label: "1.5-mile run time (min)",type: N}
+      - {name: rstpulse, label: "Resting pulse rate",     type: N}
+      - {name: runpulse, label: "Pulse at end of run",    type: N}
+      - {name: maxpulse, label: "Maximum pulse rate",     type: N}
+      - {name: name,     label: "Subject name",           type: C}
+
+  - name: flood
+    label: "Flood Recurrence Data (22 obs)"
+    top: false
+    columns:
+      - {name: year,    label: "Year",                    type: N}
+      - {name: flow,    label: "Peak discharge (cfs)",    type: N}
+
+  - name: food
+    label: "Food Nutrient Data"
+    top: false
+    columns:
+      - {name: Product,    label: "Product name",         type: C}
+      - {name: Type,       label: "Food type",            type: C}
+      - {name: Calories,   label: "Calories",             type: N}
+      - {name: Fat,        label: "Fat (g)",              type: N}
+      - {name: Saturated,  label: "Saturated fat (g)",    type: N}
+      - {name: Carbs,      label: "Carbohydrates (g)",    type: N}
+      - {name: Fiber,      label: "Dietary fiber (g)",    type: N}
+      - {name: Protein,    label: "Protein (g)",          type: N}
+      - {name: Sodium,     label: "Sodium (mg)",          type: N}
+
+  - name: gas
+    label: "NOx Emissions – Single Cylinder Engine (50 obs)"
+    top: false
+    columns:
+      - {name: trial,    label: "Trial number",           type: N}
+      - {name: mix,      label: "Air-fuel mixture ratio", type: N}
+      - {name: ethanol,  label: "Ethanol content",        type: N}
+      - {name: NOx,      label: "NOx emission (microg/J)",type: N}
+
+  - name: glasschem
+    label: "Glass Chemical Composition (214 obs)"
+    top: false
+    columns:
+      - {name: RI,   label: "Refractive index",           type: N}
+      - {name: NA,   label: "Sodium (Na2O wt%)",          type: N}
+      - {name: MG,   label: "Magnesium (MgO wt%)",        type: N}
+      - {name: AL,   label: "Aluminum (Al2O3 wt%)",       type: N}
+      - {name: SI,   label: "Silicon (SiO2 wt%)",         type: N}
+      - {name: K,    label: "Potassium (K2O wt%)",        type: N}
+      - {name: CA,   label: "Calcium (CaO wt%)",          type: N}
+      - {name: BA,   label: "Barium (BaO wt%)",           type: N}
+      - {name: FE,   label: "Iron (Fe2O3 wt%)",           type: N}
+      - {name: TYPE, label: "Glass type (1–7)",           type: N}
+
+  - name: housing
+    label: "Housing Price Data (80 obs)"
+    top: false
+    columns:
+      - {name: price,   label: "Sale price ($000)",       type: N}
+      - {name: sqfeet,  label: "Floor area (sq ft)",      type: N}
+      - {name: baths,   label: "Number of bathrooms",     type: N}
+      - {name: beds,    label: "Number of bedrooms",      type: N}
+      - {name: age,     label: "Age of home (years)",     type: N}
+      - {name: garage,  label: "Garage (1=yes, 0=no)",    type: N}
+
+  - name: htdata
+    label: "Height–Weight Longitudinal Data (198 obs)"
+    top: false
+    columns:
+      - {name: subject, label: "Subject ID",              type: N}
+      - {name: sex,     label: "Sex",                     type: C}
+      - {name: age,     label: "Age (years)",             type: N}
+      - {name: height,  label: "Height (cm)",             type: N}
+      - {name: weight,  label: "Weight (kg)",             type: N}
+
+  - name: junkmail
+    label: "Spam Email Classification (4601 obs, 58 vars)"
+    top: false
+    columns:
+      - {name: word_freq_make,    label: "Freq of 'make'",    type: N}
+      - {name: word_freq_address, label: "Freq of 'address'", type: N}
+      - {name: word_freq_all,     label: "Freq of 'all'",     type: N}
+      - {name: char_freq_semi,    label: "Freq of ';'",       type: N}
+      - {name: char_freq_dollar,  label: "Freq of '$'",       type: N}
+      - {name: cap_run_longest,   label: "Longest cap run",   type: N}
+      - {name: cap_run_total,     label: "Total cap run length",type: N}
+      - {name: spam,              label: "1=spam, 0=not spam",type: N}
+
+  - name: lake
+    label: "Lake Depth Surface Data (51 obs)"
+    top: false
+    columns:
+      - {name: x,     label: "X coordinate",              type: N}
+      - {name: y,     label: "Y coordinate",              type: N}
+      - {name: depth, label: "Depth (m)",                  type: N}
+
+  - name: laminitis
+    label: "Horse Laminitis Study (38 obs)"
+    top: false
+    columns:
+      - {name: treat,    label: "Treatment (1=treatment, 0=control)", type: N}
+      - {name: outcome,  label: "Outcome (1=laminitis, 0=none)",      type: N}
+
+  - name: leutest
+    label: "Leukemia Gene Expression – Test Set (34 obs)"
+    top: false
+    columns:
+      - {name: cancer,  label: "Cancer type (ALL/AML)",   type: C}
+
+  - name: leutrain
+    label: "Leukemia Gene Expression – Training Set (38 obs, 7129 genes)"
+    top: false
+    columns:
+      - {name: cancer,  label: "Cancer type (ALL/AML)",   type: C}
+
+  - name: lung
+    label: "Lung Cancer Survival (137 obs)"
+    top: false
+    columns:
+      - {name: time,     label: "Survival time (days)",   type: N}
+      - {name: status,   label: "Status (1=dead)",        type: N}
+      - {name: inst,     label: "Institution",            type: N}
+      - {name: age,      label: "Age at diagnosis",       type: N}
+      - {name: sex,      label: "Sex (1=male, 2=female)", type: N}
+      - {name: ph_ecog,  label: "ECOG performance score", type: N}
+      - {name: ph_karno, label: "Karnofsky score (physician)",type: N}
+      - {name: pat_karno,label: "Karnofsky score (patient)",  type: N}
+      - {name: meal_cal, label: "Calories consumed at meals", type: N}
+      - {name: wt_loss,  label: "Weight loss last 6 months",  type: N}
+
+  - name: manova1
+    label: "MANOVA Sample Data 1 (30 obs)"
+    top: false
+    columns:
+      - {name: group,  label: "Group",           type: N}
+      - {name: y1,     label: "Response 1",      type: N}
+      - {name: y2,     label: "Response 2",      type: N}
+      - {name: y3,     label: "Response 3",      type: N}
+
+  - name: manova2
+    label: "MANOVA Sample Data 2 (40 obs)"
+    top: false
+    columns:
+      - {name: A,   label: "Factor A",   type: N}
+      - {name: B,   label: "Factor B",   type: N}
+      - {name: y1,  label: "Response 1", type: N}
+      - {name: y2,  label: "Response 2", type: N}
+
+  - name: mcycle
+    label: "Motorcycle Acceleration Data (133 obs)"
+    top: false
+    columns:
+      - {name: times, label: "Time after impact (ms)",     type: N}
+      - {name: accel, label: "Head acceleration (g)",      type: N}
+
+  - name: melanoma
+    label: "Melanoma Survival Data (205 obs)"
+    top: false
+    columns:
+      - {name: time,      label: "Survival time (days)",         type: N}
+      - {name: status,    label: "Status (1=dead, 2=alive, 3=other)", type: N}
+      - {name: sex,       label: "Sex (1=male, 0=female)",       type: N}
+      - {name: age,       label: "Age at operation",             type: N}
+      - {name: year,      label: "Year of operation",            type: N}
+      - {name: thickness, label: "Tumour thickness (mm)",        type: N}
+      - {name: ulcer,     label: "Ulceration (1=present)",       type: N}
+
+  - name: mercury
+    label: "Mercury Contamination Data (100 obs)"
+    top: false
+    columns:
+      - {name: location, label: "Sample location",           type: C}
+      - {name: mercury,  label: "Mercury concentration (ppm)",type: N}
+      - {name: year,     label: "Year sampled",              type: N}
+
+  - name: orsales
+    label: "Oregon Real Estate Sales (332 obs)"
+    top: false
+    columns:
+      - {name: Year,      label: "Year",                type: N}
+      - {name: Quarter,   label: "Quarter",             type: N}
+      - {name: Region,    label: "Region",              type: C}
+      - {name: District,  label: "District",            type: C}
+      - {name: County,    label: "County",              type: C}
+      - {name: SaleType,  label: "Type of sale",        type: C}
+      - {name: SaleYear,  label: "Sale year",           type: N}
+      - {name: TotalSales,label: "Total sales ($)",     type: N}
+
+  - name: penicillin
+    label: "Penicillin Yield Experiment (24 obs)"
+    top: false
+    columns:
+      - {name: blend,     label: "Corn steep liquor blend", type: N}
+      - {name: treat,     label: "Treatment",               type: C}
+      - {name: yield,     label: "Penicillin yield",        type: N}
+
+  - name: pine
+    label: "Pine Tree Growth Data (70 obs)"
+    top: false
+    columns:
+      - {name: days,     label: "Days since planting",      type: N}
+      - {name: diam,     label: "Trunk diameter (mm)",      type: N}
+
+  - name: prdsal2
+    label: "Product Sales by Country (1440 obs)"
+    top: false
+    columns:
+      - {name: COUNTRY,  label: "Country",           type: C}
+      - {name: REGION,   label: "Region",            type: C}
+      - {name: DIVISION, label: "Division",          type: C}
+      - {name: PRODTYPE, label: "Product type",      type: C}
+      - {name: PRODUCT,  label: "Product name",      type: C}
+      - {name: YEAR,     label: "Year",              type: N}
+      - {name: QUARTER,  label: "Quarter",           type: N}
+      - {name: MONTH,    label: "Month",             type: N}
+      - {name: ACTUAL,   label: "Actual sales",      type: N}
+      - {name: PREDICT,  label: "Predicted sales",   type: N}
+      - {name: COUNTRY2, label: "Country code",      type: C}
+
+  - name: prdsal3
+    label: "Product Sales Extended (1440 obs)"
+    top: false
+    columns:
+      - {name: COUNTRY,  label: "Country",           type: C}
+      - {name: REGION,   label: "Region",            type: C}
+      - {name: PRODTYPE, label: "Product type",      type: C}
+      - {name: PRODUCT,  label: "Product name",      type: C}
+      - {name: YEAR,     label: "Year",              type: N}
+      - {name: QUARTER,  label: "Quarter",           type: N}
+      - {name: MONTH,    label: "Month",             type: N}
+      - {name: ACTUAL,   label: "Actual sales",      type: N}
+      - {name: PREDICT,  label: "Predicted sales",   type: N}
+
+  - name: prostate
+    label: "Prostate Cancer Data (97 obs)"
+    top: false
+    columns:
+      - {name: lcavol,   label: "Log cancer volume",          type: N}
+      - {name: lweight,  label: "Log prostate weight",        type: N}
+      - {name: age,      label: "Age",                        type: N}
+      - {name: lbph,     label: "Log benign prostatic hyperplasia", type: N}
+      - {name: svi,      label: "Seminal vesicle invasion",   type: N}
+      - {name: lcp,      label: "Log capsular penetration",   type: N}
+      - {name: gleason,  label: "Gleason score",              type: N}
+      - {name: pgg45,    label: "% Gleason scores 4 or 5",   type: N}
+      - {name: lpsa,     label: "Log PSA",                    type: N}
+      - {name: train,    label: "Training set indicator",     type: N}
+
+  - name: quakes
+    label: "US Earthquake Locations (2178 obs)"
+    top: false
+    columns:
+      - {name: date,  label: "Date",            type: N}
+      - {name: lat,   label: "Latitude",        type: N}
+      - {name: long,  label: "Longitude",       type: N}
+      - {name: mag,   label: "Magnitude",       type: N}
+      - {name: depth, label: "Depth (km)",      type: N}
+
+  - name: retail
+    label: "US Quarterly Retail Sales (60 obs)"
+    top: false
+    columns:
+      - {name: date,  label: "Date",                     type: N}
+      - {name: sales, label: "Retail sales (millions)",  type: N}
+
+  - name: river
+    label: "US River Lengths (144 obs)"
+    top: false
+    columns:
+      - {name: river,  label: "River name",         type: C}
+      - {name: length, label: "Length (miles)",     type: N}
+
+  - name: salary
+    label: "Faculty Salary Data (52 obs)"
+    top: false
+    columns:
+      - {name: SalBegin, label: "Starting salary ($)", type: N}
+      - {name: Salary,   label: "Current salary ($)",  type: N}
+      - {name: JobTime,  label: "Years in position",   type: N}
+      - {name: SenTime,  label: "Years at company",    type: N}
+      - {name: JobGrade, label: "Job grade",           type: C}
+      - {name: Sex,      label: "Sex",                 type: C}
+      - {name: Senior,   label: "Seniority code",      type: N}
+      - {name: Age,      label: "Age",                 type: N}
+
+  - name: score
+    label: "Test Score Data (145 obs)"
+    top: false
+    columns:
+      - {name: ID,     label: "Student ID",        type: N}
+      - {name: Score1, label: "Score on test 1",   type: N}
+      - {name: Score2, label: "Score on test 2",   type: N}
+      - {name: Score3, label: "Score on test 3",   type: N}
 
   - name: snacks
     label: "Snack Food Sales"
@@ -142,3 +715,143 @@ datasets:
       - {name: region,  label: "Sales region",  type: C}
       - {name: product, label: "Product name",  type: C}
       - {name: sales,   label: "Sales amount",  type: N}
+
+  - name: spend
+    label: "Consumer Expenditure Survey (12 obs)"
+    top: false
+    columns:
+      - {name: EdLevel,   label: "Education level",         type: C}
+      - {name: Income,    label: "Annual income ($)",        type: N}
+      - {name: Food,      label: "Food expenditure",         type: N}
+      - {name: Shelter,   label: "Shelter expenditure",      type: N}
+      - {name: Clothing,  label: "Clothing expenditure",     type: N}
+      - {name: Transport, label: "Transport expenditure",    type: N}
+      - {name: HealthCare,label: "Healthcare expenditure",   type: N}
+      - {name: Other,     label: "Other expenditure",        type: N}
+
+  - name: sports
+    label: "Sports Facility Data (27 obs)"
+    top: false
+    columns:
+      - {name: team,   label: "Team name",        type: C}
+      - {name: sport,  label: "Sport type",       type: C}
+      - {name: cap,    label: "Stadium capacity", type: N}
+      - {name: year,   label: "Year built",       type: N}
+
+  - name: steel
+    label: "Steel Production Data (40 obs)"
+    top: false
+    columns:
+      - {name: Year,    label: "Year",                      type: N}
+      - {name: Company, label: "Company name",              type: C}
+      - {name: output,  label: "Steel output (1000 tons)",  type: N}
+      - {name: workers, label: "Number of workers",         type: N}
+      - {name: wages,   label: "Wages paid (millions)",     type: N}
+      - {name: hours,   label: "Hours worked (millions)",   type: N}
+      - {name: capital, label: "Capital investment",        type: N}
+
+  - name: thick
+    label: "Sheet Metal Thickness (200 obs)"
+    top: false
+    columns:
+      - {name: run,   label: "Production run",          type: N}
+      - {name: thick, label: "Sheet thickness (mm)",    type: N}
+
+  - name: tourism
+    label: "Tourism Data by Country"
+    top: false
+    columns:
+      - {name: Country,  label: "Country name",           type: C}
+      - {name: Year,     label: "Year",                   type: N}
+      - {name: Arrivals, label: "Tourist arrivals (000)", type: N}
+      - {name: Receipts, label: "Tourism receipts ($M)",  type: N}
+
+  - name: turkey
+    label: "Turkey Growth Experiment (56 obs)"
+    top: false
+    columns:
+      - {name: ATE,    label: "Additive treatment type",   type: C}
+      - {name: Gain,   label: "Weight gain (lbs)",         type: N}
+
+  - name: us_data
+    label: "US State Socioeconomic Data (50 obs)"
+    top: false
+    columns:
+      - {name: statecode,  label: "State abbreviation",    type: C}
+      - {name: statename,  label: "State name",            type: C}
+      - {name: region,     label: "Census region",         type: C}
+      - {name: pop,        label: "Population",            type: N}
+      - {name: income,     label: "Per capita income",     type: N}
+      - {name: illiteracy, label: "Illiteracy rate (%)",   type: N}
+      - {name: life_exp,   label: "Life expectancy",       type: N}
+      - {name: murder,     label: "Murder rate",           type: N}
+      - {name: hs_grad,    label: "HS graduation rate (%)",type: N}
+      - {name: frost,      label: "Days below freezing",   type: N}
+      - {name: area,       label: "Land area (sq miles)",  type: N}
+
+  - name: ushomes
+    label: "US Housing Starts (360 obs)"
+    top: false
+    columns:
+      - {name: date,   label: "Date",                         type: N}
+      - {name: starts, label: "Housing starts (thousands)",   type: N}
+
+  - name: utilities
+    label: "Electric Utility Companies (22 obs)"
+    top: false
+    columns:
+      - {name: company,  label: "Company name",          type: C}
+      - {name: fuel,     label: "Fuel use (BTU/kWh)",    type: N}
+      - {name: nuclear,  label: "Nuclear capacity fraction",type: N}
+      - {name: capacity, label: "Installed capacity (MW)",type: N}
+      - {name: sales,    label: "Annual sales (kWh)",    type: N}
+      - {name: revenue,  label: "Annual revenue ($M)",   type: N}
+      - {name: income,   label: "Net income ($M)",       type: N}
+      - {name: cost,     label: "Revenue/cost ratio",    type: N}
+      - {name: load,     label: "Load factor",           type: N}
+
+  - name: vsales
+    label: "Vehicle Sales by Segment (240 obs)"
+    top: false
+    columns:
+      - {name: Year,    label: "Year",              type: N}
+      - {name: Month,   label: "Month",             type: N}
+      - {name: Segment, label: "Vehicle segment",   type: C}
+      - {name: Sales,   label: "Unit sales",        type: N}
+
+  - name: wheat
+    label: "Australian Wheat Yield (48 obs)"
+    top: false
+    columns:
+      - {name: year,  label: "Year",                type: N}
+      - {name: wheat, label: "Wheat yield (bu/ac)", type: N}
+
+  - name: wine
+    label: "Red Wine Quality Data (1599 obs)"
+    top: false
+    columns:
+      - {name: fixed_acidity,      label: "Fixed acidity",        type: N}
+      - {name: volatile_acidity,   label: "Volatile acidity",     type: N}
+      - {name: citric_acid,        label: "Citric acid",          type: N}
+      - {name: residual_sugar,     label: "Residual sugar (g/L)", type: N}
+      - {name: chlorides,          label: "Chlorides",            type: N}
+      - {name: free_sulfur,        label: "Free sulfur dioxide",  type: N}
+      - {name: total_sulfur,       label: "Total sulfur dioxide", type: N}
+      - {name: density,            label: "Density",              type: N}
+      - {name: pH,                 label: "pH",                   type: N}
+      - {name: sulphates,          label: "Sulphates",            type: N}
+      - {name: alcohol,            label: "Alcohol content (%)",  type: N}
+      - {name: quality,            label: "Quality score (0–10)", type: N}
+
+  - name: zipcode
+    label: "US ZIP Code Data"
+    top: false
+    columns:
+      - {name: Zip,        label: "ZIP code",             type: C}
+      - {name: City,       label: "City name",            type: C}
+      - {name: State,      label: "State abbreviation",   type: C}
+      - {name: StateName,  label: "State name",           type: C}
+      - {name: County,     label: "County name",          type: C}
+      - {name: CountyFIPS, label: "County FIPS code",     type: N}
+      - {name: Latitude,   label: "Latitude",             type: N}
+      - {name: Longitude,  label: "Longitude",            type: N}
