@@ -1,0 +1,8 @@
+fastapi>=0.110
+uvicorn[standard]>=0.29
+openai>=1.12
+python-dotenv>=1.0
+pyyaml>=6.0
+saspy>=5.4
+pandas>=2.0
+rich>=13.0

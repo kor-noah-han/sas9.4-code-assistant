@@ -2,11 +2,15 @@
 SASPy 세션 관리 및 코드 실행
 """
 
+import os
 import re
 import threading
 import saspy
 import pandas as pd
 from io import StringIO
+from dotenv import load_dotenv
+
+load_dotenv()
 
 # 그래픽 활성화 + SVG 인라인 출력 (ODA ODS HTML5 기반)
 _CODE_PREFIX = "ods graphics on / outputfmt=svg reset;\n"
@@ -61,7 +65,13 @@ class SASExecutor:
 
     def _get_session(self):
         if self._session is None:
-            self._session = saspy.SASsession(cfgname="oda", results="HTML")
+            kwargs = {"cfgname": "oda", "results": "HTML"}
+            sas_user = os.getenv("SAS_USER_NAME")
+            sas_pass = os.getenv("SAS_PASS_WORD")
+            if sas_user and sas_pass:
+                kwargs["user"] = sas_user
+                kwargs["pw"] = sas_pass
+            self._session = saspy.SASsession(**kwargs)
             self._session.submit(self._INIT_CODE)   # 라이브러리 자동 할당
             self._schedule_keepalive()
         return self._session

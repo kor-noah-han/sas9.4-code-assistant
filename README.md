@@ -10,7 +10,7 @@
 
 | 기능 | 설명 |
 | --- | --- |
-| 자연어 → SAS 코드 | Claude가 요청을 SAS 코드로 변환 |
+| 자연어 → SAS 코드 | GPT가 요청을 SAS 코드로 변환 |
 | 자동 실행 | SASPy를 통해 SAS OnDemand for Academics에서 즉시 실행 |
 | 에러 자동 수정 | 에러 발생 시 코드 수정 후 최대 3회 재시도 |
 | 결과 테이블 렌더링 | SAS HTML LST에서 테이블 추출·정제 후 브라우저 출력 |
@@ -44,8 +44,8 @@ code-assistant/
 │       ├── sashelp_datasets.yml  # SASHELP 데이터셋 정의 50+ (단일 소스)
 │       ├── stat_procs.yml        # 주요 SAS 분석 프로시저 참조
 │       └── proc_sql_diff.yml     # PROC SQL vs 표준 SQL 차이점
-├── SAS-ODA-JarFiles/        # SAS IOM 연결용 JAR 파일 (별도 다운로드 필요)
 ├── java.security.sas        # Java 암호화 정책 (SAS OnDemand for Academics 연결용)
+├── requirements.txt         # Python 패키지 의존성
 └── .env                     # API 키 및 설정
 ```
 
@@ -91,7 +91,7 @@ SAS OnDemand for Academics IOM 연결은 **Java 8 전용**입니다. Java 11/17/
 
 ### Step 3 — SAS IOM JAR 파일 다운로드
 
-SASPy가 SAS OnDemand for Academics에 IOM으로 연결하려면 SAS Integration Technologies 클라이언트 JAR 3개가 필요합니다.
+SASPy IOM 연결에는 추가 JAR 3개가 필요합니다 (saspy 패키지에 포함되지 않음).
 
 **필요한 파일:**
 
@@ -103,12 +103,17 @@ sastpj.rutil.jar
 
 **다운로드 방법:**
 
-1. [https://support.sas.com/downloads/](https://support.sas.com/downloads/) 접속 (SAS 프로필 로그인 필요, SAS OnDemand for Academics 계정과 동일)
-2. 검색창에 `SAS Integration Technologies` 또는 `IOM` 검색
-3. **SAS Integration Technologies 9.4** 클라이언트 패키지 다운로드
-4. 압축 해제 후 `sas.rutil.jar`, `sas.rutil.nls.jar`, `sastpj.rutil.jar` 3개를 `SAS-ODA-JarFiles/` 폴더에 복사
+1. [SAS IOM Client JAR 다운로드 (pid=2494)](https://support.sas.com/downloads/package.htm?pid=2494#) 페이지 접속
+2. SAS 프로필로 로그인 (SAS OnDemand for Academics 계정과 동일)
+3. 다운로드 후 압축 해제
+4. JAR 3개를 saspy의 `iomclient` 폴더에 복사:
 
-> SAS 지원 포털 접근이 어려운 경우: SASPy GitHub Issues나 커뮤니티에서 공유된 파일을 사용하기도 합니다. 단, 라이선스 확인 필요.
+```bash
+# saspy java 경로 확인
+SASPY_IOM=$(python -c "import saspy,os; print(os.path.join(os.path.dirname(saspy.__file__),'java','iomclient'))")
+
+cp sas.rutil.jar sas.rutil.nls.jar sastpj.rutil.jar "$SASPY_IOM/"
+```
 
 ---
 
@@ -119,26 +124,12 @@ sastpj.rutil.jar
 python3 -m venv .venv
 source .venv/bin/activate          # Windows: .venv\Scripts\activate
 
-pip install saspy pandas fastapi uvicorn python-dotenv anthropic pyyaml
+pip install -r requirements.txt
 ```
 
 ---
 
-### Step 5 — JAR 파일을 SASPy 경로에 복사
-
-```bash
-# 파이썬 버전 확인 후 경로 조정 (3.9, 3.11 등)
-SASPY_JAVA=.venv/lib/python3.9/site-packages/saspy/java
-
-cp SAS-ODA-JarFiles/*.jar $SASPY_JAVA/
-cp SAS-ODA-JarFiles/*.jar $SASPY_JAVA/iomclient/
-```
-
-> macOS에서 Python 버전이 다르면 `python3.9` 부분을 `python3.11` 등으로 변경
-
----
-
-### Step 6 — SASPy 설정 파일 작성
+### Step 5 — SASPy 설정 파일 작성
 
 아래 경로에 파일을 새로 생성합니다:
 
@@ -157,7 +148,7 @@ oda = {
     'iomhost'   : ['odaws01-apse1-2.oda.sas.com', 'odaws02-apse1-2.oda.sas.com'],
     'iomport'   : 8591,
 
-    # ~/.authinfo 파일의 키 이름 (아래 Step 7과 동일하게 맞춤)
+    # ~/.authinfo 파일의 키 이름 (아래 Step 6과 동일하게 맞춤)
     'authkey'   : 'oda',
 
     'encoding'  : 'utf-8',
@@ -174,7 +165,7 @@ oda = {
 
 ---
 
-### Step 7 — 인증 정보 설정
+### Step 6 — 인증 정보 설정
 
 **`~/.authinfo`** — SAS OnDemand for Academics 로그인 정보 저장
 
@@ -192,7 +183,7 @@ chmod 600 ~/.authinfo
 
 ---
 
-### Step 8 — 환경 변수 설정 (`.env` 파일)
+### Step 7 — 환경 변수 설정 (`.env` 파일)
 
 프로젝트 루트에 `.env` 파일을 생성합니다:
 
@@ -272,7 +263,7 @@ uvicorn backend.main:app --reload --port 8000
 - `~/.authinfo` 권한이 600인지 확인: `ls -la ~/.authinfo`
 - `sascfg_personal.py`의 `iomhost` 리전이 SAS OnDemand for Academics 계정 리전과 일치하는지 확인
 - Java 버전 확인: `java -version` → 1.8.x 여야 함
-- JAR 3개가 `saspy/java/` 와 `saspy/java/iomclient/` 양쪽에 복사됐는지 확인
+- saspy 5.x 이상인지 확인: `pip show saspy` (JAR 파일 자체 포함)
 
 ### `java.security` 오류가 날 때
 
@@ -289,7 +280,22 @@ uvicorn backend.main:app --reload --port 8000
 ## 주의사항
 
 - **Java 8 필수** — Eclipse Temurin 8 권장. Java 11+ 는 SAS OnDemand for Academics IOM 연결 불가
-- **SAS JAR 3개** — SAS 지원 포털에서 별도 다운로드 필요 (라이선스 보호)
+- **SAS IOM JAR 3개** — `sas.rutil.jar`, `sas.rutil.nls.jar`, `sastpj.rutil.jar`은 [별도 다운로드](https://support.sas.com/downloads/package.htm?pid=2494#) 필요
 - **MYLIB** 데이터는 `~/sas_workspace/`에 물리적으로 저장되며, 세션 재시작 시 자동 복원
 - **SASHELP** 메타데이터는 `sashelp_datasets.yml` 단일 소스 — 코드 생성 프롬프트에 자동 주입
 - `.env` 파일과 `~/.authinfo`는 절대 Git에 커밋하지 마세요
+
+---
+
+## 다른 사람이 사용하려면
+
+Step 1~7을 따라 환경을 구성한 뒤, 아래 항목만 본인 것으로 변경하면 됩니다:
+
+| 변경 항목 | 파일 | 설명 |
+| --- | --- | --- |
+| SAS ODA 계정 | `~/.authinfo` (Mac) 또는 `~/_authinfo` (Windows) | 본인 이메일·비밀번호 |
+| SAS ODA 계정 | `.env` (`SAS_USER_NAME`, `SAS_PASS_WORD`) | 동일 계정 |
+| OpenAI API 키 | `.env` (`OPENAI_API_KEY`) | 본인 API 키 |
+| ODA 리전 | `sascfg_personal.py` (`iomhost`) | 본인 ODA 리전에 맞게 변경 (Step 1 참고) |
+
+> SAS OnDemand for Academics 계정은 무료로 생성할 수 있으므로, **OpenAI API 키만 있으면** 누구나 사용 가능합니다.

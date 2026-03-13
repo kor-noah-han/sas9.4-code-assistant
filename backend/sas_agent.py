@@ -21,16 +21,19 @@ MAX_HISTORY_TURNS = 10
 
 
 def _print_tables(tables: list):
+    """tables: [{"type": "table"|"svg", "html": str}, ...]"""
     if not tables:
         return
-    for i, df in enumerate(tables):
-        title = f"테이블 {i+1}" if len(tables) > 1 else "결과"
-        rt = Table(title=title, box=box.SIMPLE_HEAVY, show_lines=True)
-        for col in df.columns:
-            rt.add_column(str(col), style="cyan")
-        for _, row in df.iterrows():
-            rt.add_row(*[str(v) for v in row])
-        console.print(rt)
+    for i, item in enumerate(tables):
+        if item.get("type") == "svg":
+            console.print(f"[dim](SVG 그래프 {i+1} — 터미널에서 표시 불가)[/]")
+            continue
+        import re as _re
+        text = _re.sub(r'<[^>]+>', ' ', item.get("html", ""))
+        text = _re.sub(r'\s+', ' ', text).strip()
+        if text:
+            title = f"테이블 {i+1}" if len(tables) > 1 else "결과"
+            console.print(Panel(text[:2000], title=f"[bold]{title}[/]", border_style="dim"))
 
 
 def _print_code(code: str, title: str = "생성된 SAS 코드"):

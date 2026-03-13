@@ -8,8 +8,58 @@ import json
 import re
 import sys
 import threading
+from html.parser import HTMLParser
 from pathlib import Path
 from typing import Optional
+
+_lib_lock = threading.Lock()
+
+
+class _HTMLTextExtractor(HTMLParser):
+    """HTML 테이블에서 셀 텍스트를 추출 (탭/줄바꿈 구분)"""
+    def __init__(self):
+        super().__init__()
+        self._rows: list[list[str]] = []
+        self._cur_row: list[str] = []
+        self._cur_cell: list[str] = []
+        self._in_cell = False
+
+    def handle_starttag(self, tag, _):
+        if tag in ('td', 'th'):
+            self._in_cell = True
+            self._cur_cell = []
+        elif tag == 'tr':
+            self._cur_row = []
+
+    def handle_endtag(self, tag):
+        if tag in ('td', 'th'):
+            self._in_cell = False
+            self._cur_row.append(''.join(self._cur_cell).strip())
+        elif tag == 'tr':
+            if self._cur_row:
+                self._rows.append(self._cur_row)
+
+    def handle_data(self, data):
+        if self._in_cell:
+            self._cur_cell.append(data)
+
+    def get_text(self, max_rows=50) -> str:
+        lines = ['\t'.join(r) for r in self._rows[:max_rows]]
+        return '\n'.join(lines)
+
+
+def _tables_to_text(items: list[dict], max_chars=2000) -> str:
+    """result의 table HTML 목록 → 요약용 텍스트"""
+    parts = []
+    for item in items:
+        if item.get('type') == 'svg':
+            continue
+        ext = _HTMLTextExtractor()
+        ext.feed(item.get('html', ''))
+        parts.append(ext.get_text())
+    text = '\n\n'.join(p for p in parts if p)
+    return text[:max_chars]
+
 
 from pydantic import BaseModel
 
@@ -148,9 +198,11 @@ async def _stream(message: str, session_id: str):
         )
         yield _evt("result", items=output_items, output=output_text)
 
-        # 4. 요약 (입력 1500자로 제한, max_tokens=250으로 응답 속도 개선)
+        # 4. 요약 — 테이블 HTML 텍스트 + 텍스트 출력을 결합
         yield _evt("status", text="결과 요약 생성 중...")
-        summary_input = (result["output"] or result["log"])[:1500]
+        table_text = _tables_to_text(output_items)
+        raw_output = (result["output"] or result["log"])[:1000]
+        summary_input = (table_text + "\n" + raw_output).strip()[:2500]
         text_summary = await asyncio.to_thread(llm.summarize, message, code, summary_input)
         yield _evt("summary", text=text_summary)
 
@@ -179,6 +231,11 @@ async def _stream(message: str, session_id: str):
 @app.get("/")
 async def index():
     return FileResponse(FRONTEND_DIR / "index.html")
+
+
+@app.get("/sas-logo-blue.png")
+async def logo():
+    return FileResponse(Path(__file__).parent.parent / "sas-logo-blue.png", media_type="image/png")
 
 
 @app.get("/chat/stream")
@@ -296,8 +353,9 @@ _lib_executor = None  # type: Optional[SASExecutor]
 
 def _get_lib_executor() -> SASExecutor:
     global _lib_executor
-    if _lib_executor is None:
-        _lib_executor = SASExecutor()
+    with _lib_lock:
+        if _lib_executor is None:
+            _lib_executor = SASExecutor()
     return _lib_executor
 
 

@@ -706,8 +706,7 @@ jdk.jar.disabledAlgorithms=MD2, MD5, RSA keySize < 1024, \
 # Example:
 #   jdk.tls.disabledAlgorithms=MD5, SSLv3, DSA, RSA keySize < 2048
 jdk.tls.disabledAlgorithms=\
-    DH keySize < 1024, EC keySize < 224, anon, NULL, \
-    ECDH, \
+    anon, NULL, \
     include jdk.disabled.namedCurves
 
 # Legacy algorithms for Secure Socket Layer/Transport Layer Security (SSL/TLS)
@@ -923,7 +922,7 @@ jdk.tls.keyLimits=AES/GCM/NoPadding KeyUpdate 2^37
 # Note: This property is currently used by the JDK Reference implementation.
 # It is not guaranteed to be examined and used by other implementations.
 #
-#crypto.policy=unlimited
+crypto.policy=unlimited
 
 #
 # The policy for the XML Signature secure validation mode. The mode is

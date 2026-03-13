@@ -69,14 +69,10 @@
       text-decoration: none;
     }
 
-    .logo-box {
-      width: 30px; height: 30px;
-      background: rgba(255,255,255,0.2);
-      border: 1px solid rgba(255,255,255,0.35);
-      border-radius: 6px;
-      display: flex; align-items: center; justify-content: center;
-      font-weight: 900; font-size: 13px; color: #fff;
-      letter-spacing: -0.5px; flex-shrink: 0;
+    .logo-img {
+      height: 24px;
+      flex-shrink: 0;
+      filter: brightness(0) invert(1);  /* 흰색으로 변환 */
     }
 
     .header-title {
@@ -237,12 +233,17 @@
     }
 
     .welcome-logo {
-      width: 72px; height: 72px;
+      width: 120px; height: 120px;
       background: var(--blue);
-      border-radius: 18px;
+      border-radius: 28px;
       display: flex; align-items: center; justify-content: center;
-      font-size: 26px; font-weight: 900; color: #fff;
-      box-shadow: 0 4px 20px rgba(0,112,192,0.25);
+      box-shadow: 0 6px 28px rgba(0,112,192,0.3);
+      overflow: hidden;
+    }
+
+    .welcome-logo img {
+      height: 44px;
+      filter: brightness(0) invert(1);
     }
 
     .welcome h2 { font-size: 20px; font-weight: 700; color: var(--text); }
@@ -1113,7 +1114,7 @@
 <!-- HEADER -->
 <div class="header">
   <div class="header-logo">
-    <div class="logo-box">SAS</div>
+    <img class="logo-img" src="/sas-logo-blue.png" alt="SAS">
     <span class="header-title">Code <span>Assistant</span></span>
   </div>
   <div class="header-spacer"></div>
@@ -1143,7 +1144,7 @@
   <div class="main">
     <div class="chat-area" id="chatArea">
       <div class="welcome" id="welcome">
-        <div class="welcome-logo">SAS</div>
+        <div class="welcome-logo"><img src="/sas-logo-blue.png" alt="SAS"></div>
         <h2>SAS Code Assistant</h2>
         <p>자연어로 SAS 분석을 요청하면<br>코드를 생성하고 ODA에서 실행합니다.</p>
         <div class="example-grid">
@@ -1286,7 +1287,7 @@ function createWelcome() {
   el.className = 'welcome';
   el.id = 'welcome';
   el.innerHTML = `
-    <div class="welcome-logo">SAS</div>
+    <div class="welcome-logo"><img src="/sas-logo-blue.png" alt="SAS"></div>
     <h2>SAS Code Assistant</h2>
     <p>자연어로 SAS 분석을 요청하면<br>코드를 생성하고 ODA에서 실행합니다.</p>
     <div class="example-grid">
@@ -1351,6 +1352,20 @@ async function _refreshMylib() {
     }
   } catch (e) {
     // 백그라운드 실패는 무시
+  }
+}
+
+async function _refreshSingleLib(libName) {
+  try {
+    const res = await fetch(
+      `/libraries/refresh?session_id=${encodeURIComponent(activeId || '')}`
+    );
+    const data = await res.json();
+    if (data.libraries?.[libName]) {
+      updateDynamicLib(libName, data.libraries[libName]);
+    }
+  } catch (e) {
+    // 조용히 실패
   }
 }
 
@@ -1589,7 +1604,13 @@ function renderLibTree(libraries) {
       ${writableBadge}
       ${dsCount ? `<span class="lib-count">${dsCount}</span>` : ''}
     `;
-    header.onclick = () => header.classList.toggle('open');
+    header.onclick = () => {
+      const opening = !header.classList.contains('open');
+      header.classList.toggle('open');
+      if (opening && (lib.name === 'WORK' || lib.name === 'MYLIB')) {
+        _refreshSingleLib(lib.name);
+      }
+    };
 
     const dsContainer = document.createElement('div');
     dsContainer.className = 'lib-datasets';
@@ -1803,11 +1824,19 @@ function addResult(card, items, output) {
     // 숫자형 셀 오른쪽 정렬
     t.querySelectorAll('tbody tr').forEach(tr => {
       tr.querySelectorAll('td').forEach(td => {
-        if (/^-?[\d,]+\.?\d*$/.test(td.textContent.trim())) {
+        const raw = td.textContent.trim();
+        if (/^-?\d[\d]*\.?\d*$/.test(raw)) {
           td.style.textAlign = 'right';
           const idx = td.cellIndex;
           const th = t.querySelector(`thead tr th:nth-child(${idx+1})`);
           if (th) th.style.textAlign = 'right';
+          // 큰 숫자에 콤마 삽입
+          const num = parseFloat(raw);
+          if (Number.isFinite(num)) {
+            td.textContent = num.toLocaleString('en-US', {
+              maximumFractionDigits: 10
+            });
+          }
         }
       });
     });
@@ -1860,7 +1889,7 @@ function renderMarkdown(text) {
 function addSummary(card, text) {
   const block = document.createElement('div');
   block.className = 'summary-block';
-  block.innerHTML = `<div class="summary-label">요약</div><div class="summary-text">${renderMarkdown(text)}</div>`;
+  block.innerHTML = `<div class="summary-label">분석 결과 설명</div><div class="summary-text">${renderMarkdown(text)}</div>`;
   card.insertBefore(block, card.querySelector('.status-bar'));
   scrollDown();
 }
@@ -2126,10 +2155,10 @@ async function _dsOp({ lib, name, action, new_name = '', target_lib = '' }) {
       body: JSON.stringify({ lib, name, action, new_name, target_lib, session_id: activeId || '' }),
     });
     const data = await res.json();
-    if (!data.success) { alert(`오류: ${data.message}`); return; }
+    if (!data.success) { await showAlert('오류', data.message); return; }
     await refreshLibraries();
   } catch (e) {
-    alert(`요청 실패: ${e.message}`);
+    await showAlert('요청 실패', e.message);
   }
 }
 </script>

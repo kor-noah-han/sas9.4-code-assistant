@@ -10,8 +10,12 @@ import yaml
 
 load_dotenv()
 
-client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
-MODEL = os.getenv("OPENAI_MODEL", "gpt-5-nano")
+_base_url = os.getenv("OPENAI_BASE_URL")
+client = OpenAI(
+    api_key=os.getenv("OPENAI_API_KEY"),
+    **( {"base_url": _base_url} if _base_url else {} ),
+)
+MODEL = os.getenv("OPENAI_MODEL", "gpt-4o-mini")
 
 # PROC SQL 차이점 로드
 _root = Path(__file__).parent.parent
@@ -153,5 +157,5 @@ def summarize(user_request: str, code: str, output: str) -> str:
         },
     ]
 
-    response = client.chat.completions.create(model=MODEL, messages=messages)
+    response = client.chat.completions.create(model=MODEL, messages=messages, max_tokens=250)
     return response.choices[0].message.content.strip()
