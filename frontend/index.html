@@ -1748,21 +1748,14 @@ function addCodeBlock(card, code, label = '생성된 SAS 코드', retryNum = 0) 
         ${retryHtml}
       </div>
       <div class="code-actions">
-        <button class="toggle-btn">
+        <button class="toggle-btn" onclick="toggleBlock(this)">
           <span class="toggle-chevron">▼</span> 접기
         </button>
-        <button class="btn-copy btn-icon">복사</button>
+        <button class="btn-copy btn-icon" onclick="copyCode(this, '${id}')">복사</button>
       </div>
     </div>
     <pre class="code-pre"><code class="language-sas" id="${id}">${esc(code)}</code></pre>
   `;
-
-  block.querySelector('.toggle-btn').addEventListener('click', function() {
-    toggleBlock(this);
-  });
-  block.querySelector('.btn-copy').addEventListener('click', function() {
-    copyCode(this, id);
-  });
 
   const statusBar = card.querySelector('.status-bar');
   card.insertBefore(block, statusBar);
