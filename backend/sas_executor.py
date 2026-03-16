@@ -139,7 +139,7 @@ class SASExecutor:
 
         log = result.get("LOG", "")
         lst = result.get("LST", "")
-        has_error = "ERROR:" in log
+        has_error = bool(re.search(r'\bERROR\b', log))
 
         tables = []
         if lst.strip() and not has_error:

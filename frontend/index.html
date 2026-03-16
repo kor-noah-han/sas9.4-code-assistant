@@ -1390,9 +1390,24 @@ async function refreshLibraries() {
     if (data.libraries) {
       // WORK, MYLIB 업데이트 (SASHELP은 정적 — refresh 응답에 없음)
       ['WORK', 'MYLIB'].forEach(libName => {
-        if (libName in data.libraries) {
-          updateDynamicLib(libName, data.libraries[libName]);
+        if (!(libName in data.libraries)) return;
+        const datasets = data.libraries[libName];
+
+        // 기존 stale 캐시 제거
+        for (const key of _colCache.keys()) {
+          if (key.startsWith(libName + '.')) _colCache.delete(key);
         }
+
+        updateDynamicLib(libName, datasets);
+
+        // 컬럼 정보 백그라운드 pre-fetch
+        datasets.forEach(ds => {
+          const cacheKey = `${libName}.${ds.name.toUpperCase()}`;
+          fetch(`/libraries/columns?lib=${encodeURIComponent(libName)}&ds=${encodeURIComponent(ds.name)}&session_id=${encodeURIComponent(activeId || '')}`)
+            .then(r => r.json())
+            .then(d => { if (d.columns && d.columns.length) _colCache.set(cacheKey, d.columns); })
+            .catch(() => {});
+        });
       });
     }
   } catch (e) {
